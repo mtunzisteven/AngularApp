@@ -11,6 +11,8 @@ import { ServerComponent } from './server/server.component';
 import { ServersComponent } from './servers/servers.component';
 import { WarningAlertComponent } from './warning-alert/warning-alert.component'; // We should import the component before declaring it
 import { SuccessAlertComponent } from './success-alert/success-alert.component'; // We should import the component before declaring it
+import { FormsModule } from '@angular/forms'; // Imported this forms module to enable the use of Two-Way-Binding
+
 
 
 /**
@@ -27,7 +29,8 @@ import { SuccessAlertComponent } from './success-alert/success-alert.component';
     SuccessAlertComponent
   ],
   imports: [ 
-    BrowserModule
+    BrowserModule,
+    FormsModule 
   ],
   providers: [],
   bootstrap: [AppComponent] // bootstrap array lists all the components angular should know before it analyses the index.html. 

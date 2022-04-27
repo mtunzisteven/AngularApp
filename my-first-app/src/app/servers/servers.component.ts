@@ -9,6 +9,7 @@ export class ServersComponent implements OnInit {
 
   allowNewServer = false;
   serverCreationStatus = 'No server was created!';
+  serverName = '';
 
   constructor() { 
 
@@ -23,8 +24,17 @@ export class ServersComponent implements OnInit {
   }
 
   // when button is clicked(create server button), this must be fired
+  // will use event button to call this function on button click
   onCreateServer(){
-    this.serverCreationStatus = 'Server was created!';
+    this.serverCreationStatus = 'Server name is:'+ this.serverName;
+  }
+
+  // when input is entered(char by char), this must be fired
+  // will use input event to call this function on input element
+  // "<HTMLInputElement>event.target).value" is used in type script to
+  // access the value of the input entered by the user in the input element
+  onUpdateServerName(event:any){
+    this.serverName = (<HTMLInputElement>event.target).value;
   }
 
 }

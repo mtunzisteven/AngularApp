@@ -1,3 +1,22 @@
+
+<!-- This input form uses data binding and event binding to change the value of an attribute in .component.ts file -->
+<!-- The value of the attribute in the .component.ts file is then displayed in this template using string interpolation -->
+<label>Server Name</label>
+<!-- Longer/harder two way binding-->
+<!-- <input 
+    type="text" 
+    class="form-control" 
+    (input)="onUpdateServerName($event)"
+/> -->
+
+<!-- Easier two way binding using ng directive: This needs no onInput event fn, but changes the attr value in the  -->
+<!-- .component.ts file as well as populate the input with the attr value in the opposite direction as well -->
+<input 
+    type="text" 
+    class="form-control" 
+    [(ngModel)]="serverName"
+/>
+
 <!-- Property binding needs no brackets or braces, just the property name -->
 <!-- Here the attribute disabled is changed dynamically in the .components.ts file -->
 <!-- We can't use data binding as value for attribute, it'll break the code: [disabled]="{{allowNewServer}} is not allowed" -->
@@ -9,5 +28,5 @@
     Add Server
 </button>
 <p>{{serverCreationStatus}}</p>
-<app-server></app-server> <!--This just brings the server htmlteplate into scope and using it. -->
+<app-server></app-server> <!--This just injects the server htmlteplate into this template. -->
 <app-server></app-server>
