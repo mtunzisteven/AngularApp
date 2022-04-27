@@ -1,0 +1,10 @@
+h4{
+    background-color: rgb(255, 210, 47);
+    color:rgb(177, 2, 2);
+    padding: 4px;
+    border-radius: 2px;
+    max-width: 50%;
+    margin: 5px auto;
+    text-align: center;
+    border: solid 2px rgb(177, 2, 2);
+}
