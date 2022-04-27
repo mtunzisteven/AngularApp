@@ -1,1 +1,18 @@
 <p>server with id {{serverId}} is {{serverStatus}} with error code: {{getErrorCode()}}</p>
+
+<!-- Data-binding Assingment -->
+
+<input 
+    type="text" 
+    class="form-control" 
+    [(ngModel)]="userName"
+/>
+
+<p>User Name:<strong> {{userName}}</strong></p>
+
+<button 
+    class="btn btn-danger" 
+    [disabled]="userName === ''"
+    (click)="userName =''">
+    Reset User
+</button>

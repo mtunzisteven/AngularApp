@@ -17,6 +17,8 @@ export class ServerComponent{
     serverStatus: string = 'offline';
     errorCode = 112;
 
+    userName = '';
+
     getErrorCode(){
         return this.errorCode;
     }

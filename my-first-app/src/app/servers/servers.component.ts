@@ -26,7 +26,7 @@ export class ServersComponent implements OnInit {
   // when button is clicked(create server button), this must be fired
   // will use event button to call this function on button click
   onCreateServer(){
-    this.serverCreationStatus = 'Server name is:'+ this.serverName;
+    this.serverCreationStatus = 'Server was created! Server name is:'+ this.serverName;
   }
 
   // when input is entered(char by char), this must be fired
