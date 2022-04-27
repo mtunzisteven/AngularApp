@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 // Component decorator used
  // <app-root></app-root>: This is the main element found in index.html, where we inject dynamic content into
 @Component({
-  selector: 'app-root',
+  selector: '.app-root',
   templateUrl: './app.component.html', // This tells us the html file that will serve as a template and who content will be injected into the selector
   // styleUrls: ['./app.component.css'] // This tells us the file holding the css for the html template
   styles:[`

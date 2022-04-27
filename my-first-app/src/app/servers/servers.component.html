@@ -1,2 +1,13 @@
+<!-- Property binding needs no brackets or braces, just the property name -->
+<!-- Here the attribute disabled is changed dynamically in the .components.ts file -->
+<!-- We can't use data binding as value for attribute, it'll break the code: [disabled]="{{allowNewServer}} is not allowed" -->
+<!-- We use () for event binding as in the example below: (click)="fn name()" -->
+<button 
+    class="btn btn-primary" 
+    [disabled]="!allowNewServer"
+    (click)="onCreateServer()">
+    Add Server
+</button>
+<p>{{serverCreationStatus}}</p>
 <app-server></app-server> <!--This just brings the server htmlteplate into scope and using it. -->
 <app-server></app-server>

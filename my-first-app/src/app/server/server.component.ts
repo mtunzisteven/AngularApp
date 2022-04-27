@@ -12,4 +12,12 @@ import { Component } from '@angular/core';
 
 export class ServerComponent{
 
+    // String enterpolation data binding examples: These value can now be access from the respective Html template when using {{value}}/{{fn call}}
+    serverId: number = 10;
+    serverStatus: string = 'offline';
+    errorCode = 112;
+
+    getErrorCode(){
+        return this.errorCode;
+    }
 }
