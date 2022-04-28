@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
   // styleUrls: ['./app.component.css'] // This tells us the file holding the css for the html template
   styles:[`
           h3{
-            color: pink;
+            color: green;
           }
         `]
 

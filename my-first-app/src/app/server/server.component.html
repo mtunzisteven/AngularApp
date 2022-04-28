@@ -1,20 +1,31 @@
-<p>server with id {{serverId}} is {{serverStatus}} with error code: {{getErrorCode()}}</p>
+<!-- Attribute directives do not begin with a star and don't change the dom(add or remove elements) -->
+<!-- Using property binding to bind onto the directive, the directive itself does not include the square brackets -->
+<!-- class name, 'online' is added when serverStatus is online -->
+<!-- Both ngStyle & ngClass added as attributes. style attribite or class name camel case or dashed inside single quotes -->
+<p 
+    [ngStyle]="{backgroundColor: getColor()}"
+    [ngClass]="{online: serverStatus === 'online'}"
+>
+    server with id {{serverId}} is {{serverStatus}} with error code: {{getErrorCode()}}
+</p>
 
-<!-- Data-binding Assingment -->
+<!-- Data-binding Assingment ------------------------------------------------------------------->
 
-<input 
+<!-- <input 
     type="text" 
     class="form-control" 
     [(ngModel)]="userName"
-/>
+/> -->
 
-<p>User Name:<strong> {{userName}}</strong></p>
+<!-- <p>User Name:<strong> {{userName}}</strong></p> -->
 
 <!-- Here we disable the button when value of user name is empty / (userName === '') returns true -->
 <!-- When the value of userName is not empty, clicking the button will revert the value to '' / empty -->
-<button 
+<!-- <button 
     class="btn btn-danger" 
     [disabled]="userName === ''"
     (click)="userName =''">
     Reset User
-</button>
+</button>  -->
+
+<!-- Data binding assignment End ------------------------------------------------------------->

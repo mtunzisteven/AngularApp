@@ -37,5 +37,8 @@
     <p>No server created!</p>
 </ng-template>
 
-<app-server></app-server> <!--This just injects the server htmlteplate into this template. -->
-<app-server></app-server>
+<!-- ngFor is a structural directive(can add or remove elements). -->
+<!-- the element with the ngFor directive will be repeated for the defined number of times. -->
+<app-server *ngFor="let server of servers"></app-server> 
+<!--The html line aboce just injects the server htmlteplate into this template. -->
+
