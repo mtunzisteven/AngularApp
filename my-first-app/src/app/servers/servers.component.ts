@@ -10,6 +10,7 @@ export class ServersComponent implements OnInit {
   allowNewServer = false;
   serverCreationStatus = 'No server was created!';
   serverName = '';
+  serverCreated = false;
 
   constructor() { 
 
@@ -26,6 +27,9 @@ export class ServersComponent implements OnInit {
   // when button is clicked(create server button), this must be fired
   // will use event button to call this function on button click
   onCreateServer(){
+
+    this.serverCreated = true;
+
     this.serverCreationStatus = 'Server was created! Server name is:'+ this.serverName;
   }
 

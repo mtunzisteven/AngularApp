@@ -10,7 +10,7 @@
 /> -->
 
 <!-- Easier two way binding using ng directive: This needs no onInput event fn, but changes the attr value in the  -->
-<!-- .component.ts file as well as populate the input with the attr value in the opposite direction as well -->
+<!-- .component.ts file as well as populate the input with the attr value in the opposite direction -->
 <input 
     type="text" 
     class="form-control" 
@@ -27,6 +27,15 @@
     (click)="onCreateServer()">
     Add Server
 </button>
-<p>{{serverCreationStatus}}</p>
+
+<!-- start ahead of ngIf tell us this is a structural directive that changes the dom -->
+<!-- the ngIf directive allows us to use an if statement to show the element, otherwise it shows the element with the marker listed -->
+<p  *ngIf="serverCreated; else noServer">{{serverCreationStatus}}</p> 
+
+<!-- marker inside the Angular ng-template tag. This is the marker and template that ho,ds the element we'd likw to display in else -->
+<ng-template #noServer>
+    <p>No server created!</p>
+</ng-template>
+
 <app-server></app-server> <!--This just injects the server htmlteplate into this template. -->
 <app-server></app-server>

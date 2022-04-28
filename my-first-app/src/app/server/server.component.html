@@ -10,6 +10,8 @@
 
 <p>User Name:<strong> {{userName}}</strong></p>
 
+<!-- Here we disable the button when value of user name is empty / (userName === '') returns true -->
+<!-- When the value of userName is not empty, clicking the button will revert the value to '' / empty -->
 <button 
     class="btn btn-danger" 
     [disabled]="userName === ''"
