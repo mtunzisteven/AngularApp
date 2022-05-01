@@ -32,10 +32,38 @@
 <!-- the ngIf directive allows us to use an if statement to show the element, otherwise it shows the element with the marker listed -->
 <p  *ngIf="serverCreated; else noServer">{{serverCreationStatus}}</p> 
 
-<!-- marker inside the Angular ng-template tag. This is the marker and template that ho,ds the element we'd likw to display in else -->
+<!-- marker inside the Angular ng-template tag. This is the marker and template that holds the element we'd like to display in else -->
 <ng-template #noServer>
     <p>No server created!</p>
 </ng-template>
+
+<!-- Assignment Start ------------------------------------------------------------------------------------------->
+
+<button 
+    class="btn btn-warning" 
+    (click)="onShowDetails()">
+    {{toggleDetails}}
+</button>
+
+<!-- start ahead of ngIf tell us this is a structural directive that changes the dom -->
+<!-- the ngIf directive allows us to use an if statement to show the element, otherwise it shows the element with the marker listed -->
+<p  *ngIf="showDetails; else hideDetails">{{information}}</p> 
+
+<!-- marker inside the Angular ng-template tag. This is the marker and template that holds the element we'd like to display in else -->
+<ng-template #hideDetails>
+    <p></p>
+</ng-template>
+
+<p  
+    *ngFor="let detail of details; let i =index"
+    [ngStyle]="{backgroundColor: i>=4? 'blue':'white'}"
+    [ngClass]="{white: i>=4}"
+>
+    {{detail}}
+</p>
+
+<!-- Assignment End --------------------------------------------------------------------------------------------->
+
 
 <!-- ngFor is a structural directive(can add or remove elements). -->
 <!-- the element with the ngFor directive will be repeated for the defined number of times. -->

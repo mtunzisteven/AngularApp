@@ -3,7 +3,13 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-servers',
   templateUrl: './servers.component.html',
-  styleUrls: ['./servers.component.css']
+  styles:[
+    `
+        .white{
+            color: white;
+        }
+    `
+]
 })
 export class ServersComponent implements OnInit {
 
@@ -41,5 +47,29 @@ export class ServersComponent implements OnInit {
   onUpdateServerName(event:any){
     this.serverName = (<HTMLInputElement>event.target).value;
   }
+
+  /**
+   *  Assignment: The basics -----------------------------------------------------------------
+   */
+
+  showDetails = false;
+  toggleDetails = 'Show details';
+  details = [];
+  regNumber = 0;
+  information = 'Now showing requested Details';
+
+  onShowDetails(){
+
+    this.regNumber = this.details.length+1;
+    this.showDetails = !this.showDetails;
+    this.toggleDetails = this.toggleDetails=='Hide details'? 'Show details': 'Hide details';
+    // this.details.push(this.regNumber);
+    this.details.push(new Date());
+
+  }
+
+  /**
+   * Assignment End --------------------------------------------------------------------------
+   */
 
 }
