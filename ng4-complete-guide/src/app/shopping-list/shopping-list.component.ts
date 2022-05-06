@@ -11,7 +11,7 @@ export class ShoppingListComponent implements OnInit {
   
   // a list of ingredients, as defined in the ingredients model
   ingredients: Ingredient[] = [
-    new Ingredient('Apple', 24)
+    new Ingredient('Apple', 24), new Ingredient('Banana', 4)
   ];
 
   constructor() { }
