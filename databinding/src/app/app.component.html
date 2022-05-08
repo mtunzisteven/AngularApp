@@ -8,14 +8,23 @@
   <hr>
   <div class="row">
     <div class="col-xs-12">
+      <button
+      class="btn btn-primary"
+      (click)="onChangeFirst()">Change Server</button>
+
+      <button
+      class="btn btn-danger"
+      (click)="onDestroyFirst()">Destroy First Element</button>
+
       <app-server-element 
         *ngFor="let serverElement of serverElements"
-        [srvElement]="serverElement">
+        [srvElement]="serverElement" 
+        [name]="serverElement.name">
 
         <!-- The content below would have been lost(by default, content inside Angular el lost), but the -->
         <!-- ng-content directive we specified in the place we would have had this content in the -->
         <!-- server-element html template preserves it and allows it to still be accessible -->
-        <p>
+        <p #paragraph>
           <strong *ngIf="serverElement.type === 'server'" style="color: red">{{ serverElement.content }}</strong>
           <em *ngIf="serverElement.type === 'blueprint'">{{ serverElement.content }}</em>
         </p>
