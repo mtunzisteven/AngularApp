@@ -14,7 +14,7 @@ export class ShoppingListComponent implements OnInit {
     new Ingredient('Apple', 24), new Ingredient('Banana', 4)
   ];
 
-  constructor() { }
+  constructor() { } 
    
   ngOnInit(): void { 
   }
