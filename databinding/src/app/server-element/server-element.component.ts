@@ -49,7 +49,7 @@ export class ServerElementComponent implements
 
   // accessing element by ref using @ContentChild and ElementRef
   // this reference is on the html template of the parent component
-  // static: true, because we'll use this element inside ngOnInit(fired after ngOnInit())
+  // static: true, because we'll use this element inside ngOnInit
   @ContentChild('paragraph', {static: true}) paragraph: ElementRef;
 
   constructor() { 
