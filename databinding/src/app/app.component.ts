@@ -4,7 +4,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  // encapsulation: ViewEncapsulation.ShadowDom // ShadowDom:default, Emulated: default CSS encapsulation, 
+  // encapsulation: ViewEncapsulation.ShadowDom // ShadowDom:default - only css in component applies to component, Emulated: default CSS encapsulation, 
 })
 export class AppComponent {
   serverElements = [{type:'server', name:'Testserver', content:'Just a test!'}];
