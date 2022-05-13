@@ -1,3 +1,5 @@
+<!-- <div *ngIf="condition"> === <ng-template [ngIf="condition"]><div> -->
+<!-- *ngIf prefered because it is easier to use. -->
 <div class="container">
   <div class="row">
     <div class="col-xs-12">
@@ -6,6 +8,7 @@
         (click)="onlyOdd = !onlyOdd">Only show odd numbers</button>
       <br><br>
       <ul class="list-group">
+        <!-- This div will only be shown when the numbers are odd numberes(onlyOdd == true)-->
         <div *ngIf="onlyOdd">
             <li
             class="list-group-item"
@@ -15,11 +18,12 @@
             >{{ oddNumber }}
           </li>
         </div>
+        <!-- This div will only be shown when the numbers are not odd numberes(onlyOdd == false)-->
         <div *ngIf="!onlyOdd">
           <li
             class="list-group-item"
               *ngFor="let evenNumber of evenNumbers"
-              [ngClass]="{odd: evenNumber % 2 !== 0}"
+              [ngClass]="{odd: evenNumber % 2 !== 0}" 
               [ngStyle]="{backgroundColor:evenNumber % 2 !== 0 ? 'yellow': 'white'}"
             >{{ evenNumber }}
           </li>
@@ -30,4 +34,9 @@
       </ng-template>
     </div>
   </div>
+  <p appBasicHighlight>paragraph</p>
+  <!-- Through property binding, we dynamically add the style property to this element(externally - not in the directive.ts file, but in the html template) -->
+  <!-- Pay attention to the single quotes withing the double quotes, because the value is a string. If we don't use the single quotes, we mustn't use the sqr brackets -->
+  <p appBetterHighlight [defaultColor]="'yellow'" [hoveredOverColor]="'purple'">paragraph</p>
+
 </div>
