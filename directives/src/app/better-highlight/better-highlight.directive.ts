@@ -19,7 +19,7 @@ export class BetterHighlightDirective implements OnInit {
   @Input() hoveredOverColor: string;
 
 
-  // asier way to change properties of elements in DOM without using Rendere2
+  // Easier way to change properties of elements in DOM without using Rendere2
   // must specify the property and sub-property we are accessing(eg: style.backgroundColor)
   // as arg to @HostBinding. Camel case used instead of dashes.
   @HostBinding('style.backgroundColor') backgroundColor: string;
