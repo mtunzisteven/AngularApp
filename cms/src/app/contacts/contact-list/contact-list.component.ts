@@ -13,9 +13,17 @@ export class ContactListComponent implements OnInit {
     new Contact("2", "Rex Barzee", "barzeer@byui.edu", "208-496-3768", "../../assets/images/barzeer.jpg", null)
   ];
 
+ // create a custom event that will emit contact data
+ @Output() contactEmitionCaught = new EventEmitter<Contact>();
+
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+   // The custom event and data are emitted
+  onSelectContact(contactEl: Contact){
+    this.contactEmitionCaught.emit(contactEl);
   }
 
 }

@@ -8,6 +8,8 @@ import { Contact } from './contact.model';
 })
 export class ContactsComponent implements OnInit {
 
+  contactSelected: Contact; // will hold the contact object
+
   constructor() { }
 
   ngOnInit(): void {

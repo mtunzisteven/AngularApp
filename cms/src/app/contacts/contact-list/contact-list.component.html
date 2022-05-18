@@ -16,7 +16,7 @@
 
         <!-- List group -->
         <ul class="list-group" *ngFor="let contactEl of contacts; let i =index">
-            <li class="list-group-item">
+            <li class="list-group-item" (click)="onSelectContact(contactEl)">
                 <div class="media">
                     <div class="media-body">
                         <h4 class="media-heading">Bro. {{contactEl.name}}</h4>

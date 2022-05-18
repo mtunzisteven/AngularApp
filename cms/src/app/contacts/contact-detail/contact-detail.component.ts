@@ -8,7 +8,7 @@ import { Contact } from '../contact.model';
 })
 export class ContactDetailComponent implements OnInit {
 
-  // @Input() contact: Contact = ;
+  @Input() contact: Contact; // receives value from one selected in the contact list.
 
   constructor() { }
 
