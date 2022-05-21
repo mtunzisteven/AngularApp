@@ -12,12 +12,12 @@ export class HeaderComponent implements OnInit {
   }
 
   // The Contacts list & recipes event emmiter
-  @Output() headerNav = new EventEmitter<string>();
+  @Output() selectedFeatureEvent = new EventEmitter<string>();
 
   // emit event on event firing function
-  onSelectedFeature(feature: any){
-    console.log('feature select Clicked!');
-    this.headerNav.emit(feature);
+  onSelected(selectedEvent: string){
+    console.log(selectedEvent+' tab event Clicked!');
+    this.selectedFeatureEvent.emit(selectedEvent);
   }
   
 }

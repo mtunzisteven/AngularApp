@@ -2,7 +2,7 @@
 export class Message{
 
     constructor(
-        public id: string, 
+        public id: number, 
         public subject: string, 
         public msgText: string, 
         public sender: string
