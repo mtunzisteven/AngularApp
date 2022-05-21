@@ -8,8 +8,10 @@ import { Ingredient } from 'src/app/shared/ingredient.model';
 })
 export class ShoppingEditComponent implements OnInit {
 
+  // in quotes is the name that was used as ref in html template
   @ViewChild('nameInput', {static: false}) name: ElementRef;
 
+  // in quotes is the name that was used as ref in html template
   @ViewChild('amountInput', {static: false}) amount: ElementRef;
 
 

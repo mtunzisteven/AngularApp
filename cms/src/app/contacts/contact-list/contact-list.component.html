@@ -15,19 +15,14 @@
     <div class="panel panel-default" style="margin: 15px 25px;">
 
         <!-- List group -->
-        <ul class="list-group" *ngFor="let contactEl of contacts; let i =index">
-            <li class="list-group-item" style="cursor:pointer;" (click)="onSelectContact(contactEl)">
-                <div class="media">
-                    <div class="media-body">
-                        <h4 class="media-heading">Bro. {{contactEl.name}}</h4>
-                    </div>
-                    <div class="media-right">
-                      <a href="#">
-                        <img class="media-object" style="max-height:50px;" src="{{contactEl.imageUrl}}" alt="{{contactEl.name}}">
-                      </a>
-                    </div>
-                </div>
-            </li>
+        <!-- Here we see a parent component passing data down to its children effortlessly through the html template -->
+        <!-- You need to use special decorators in the component.ts file to access data from child to parent or between sibling components -->
+        <!-- CHild to parent uses @ViewChild while between siblings uses @ -->
+        <ul class="list-group" *ngFor="let contactEl of contacts;">
+            <app-contact-item
+                [contact]="contactEl" 
+                (click)="onSelected(contactEl)"
+            ></app-contact-item>
         </ul>
       
     </div>

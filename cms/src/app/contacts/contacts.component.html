@@ -1,17 +1,17 @@
 <div class="row">
-    <div class="col-md-5">
+    <div class="col-md-5"> 
         <app-contact-list
-        (contactEmitionCaught)="contactSelected = $event"
+        (selectedContactEvent)="contactSelected = $event"
     ></app-contact-list>
     </div>
     <div class="col-md-4">
         <app-contact-detail
-        *ngIf="contactSelected; else infoText"
+        *ngIf="contactSelected"
         [contact]="contactSelected"
         ></app-contact-detail>
     </div>
-    <!-- WIll be displayed as ref to else statement above only -->
+    <!-- Will be displayed as ref to else statement above only -->
     <ng-template #infoText>
         <p>Please select a contact</p>
     </ng-template>
-</div>
+</div>  
