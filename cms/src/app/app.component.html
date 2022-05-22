@@ -1,10 +1,10 @@
-<app-header
+<cms-header
 (selectedFeatureEvent)="switchView($event)"
 >
-</app-header>
+</cms-header>
 <div class="container"> 
-    <app-contacts *ngIf="navSelected == 'contacts'"></app-contacts>
-    <app-documents *ngIf="navSelected == 'documents'"></app-documents>
-    <app-message-list *ngIf="navSelected == 'messages'"></app-message-list>
+    <cms-contacts *ngIf="navSelected == 'contacts'"></cms-contacts>
+    <cms-documents *ngIf="navSelected == 'documents'"></cms-documents>
+    <cms-message-list *ngIf="navSelected == 'messages'"></cms-message-list>
 
 </div>

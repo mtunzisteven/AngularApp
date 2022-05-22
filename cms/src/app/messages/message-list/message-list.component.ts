@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { Message } from '../message.model'
 
 @Component({
-  selector: 'app-message-list',
+  selector: 'cms-message-list',
   templateUrl: './message-list.component.html',
   styleUrls: ['./message-list.component.css']
 })

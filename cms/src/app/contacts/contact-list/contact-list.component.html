@@ -19,10 +19,10 @@
         <!-- You need to use special decorators in the component.ts file to access data from child to parent or between sibling components -->
         <!-- CHild to parent uses @ViewChild while between siblings uses @ -->
         <ul class="list-group" *ngFor="let contactEl of contacts;">
-            <app-contact-item
+            <cms-contact-item
                 [contact]="contactEl" 
                 (click)="onSelected(contactEl)"
-            ></app-contact-item>
+            ></cms-contact-item>
         </ul>
       
     </div>
