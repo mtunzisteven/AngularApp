@@ -1,4 +1,13 @@
-<div class="container">
+<button 
+  class="btn" 
+  type="button" 
+  style="display: block; margin: 30px auto;"
+  [ngStyle]="{backgroundColor: assignment? 'lightBlue':'pink'}"
+  (click)="assignment=!assignment"
+  >Go to {{assignment? 'Tutorial':'Assignment'}}</button>
+
+
+<div class="container" *ngIf="!assignment">
   <div class="row">
     <div class="col-xs-12 col-md-8 col-md-offset-2">
       <app-new-account ></app-new-account>
@@ -6,7 +15,26 @@
       <app-account
         *ngFor="let acc of accounts; let i = index"
         [account]="acc"
-        [id]="i"></app-account>
+        [id]="i"
+        ></app-account>
+    </div>
+  </div>
+</div>
+
+
+<div class="container" *ngIf="assignment">
+  <div class="row">
+    <div class="col-xs-12 col-md-8 col-md-offset-2">
+      <app-active-users
+        [users]="activeUsers"
+        (userSetToInactive)="onSetToInactive($event)"></app-active-users>
+      <app-inactive-users
+        [users]="inactiveUsers"
+        (userSetToActive)="onSetToActive($event)"></app-inactive-users>
+    </div>
+    <div class="col-xs-12 col-md-8 col-md-offset-2">
+      <h2>{{activationsMessage}}</h2>
+      <h2>{{deactivationsMessage}}</h2>
     </div>
   </div>
 </div>
