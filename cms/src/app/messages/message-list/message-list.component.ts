@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Message } from '../message.model'
+import { MessageService } from '../message.service';
 
 @Component({
   selector: 'cms-message-list',
@@ -9,21 +10,20 @@ import { Message } from '../message.model'
 })
 export class MessageListComponent implements OnInit {
 
-  messages: Message[] = [
-    new Message(100, 'Starting Test', 'This is a test message to see if the messages are being loaded', 'Steven Mavuma'),
-    new Message(110, 'Starting Test2', 'This is a second test message to see if the messages are being loaded', 'Steven Mavuma'),
-    new Message(111, 'Starting Test3', 'This is a third test message to see if the messages are being loaded', 'Steven Mavuma')
-  ];
+  messages: Message[] = [];
 
-  constructor() { }
+  constructor(private messageService: MessageService) { }
 
   ngOnInit(): void {
+    this.messages = this.messageService.messages;
+
+    this.messageService.messageChangedEvent.subscribe(
+
+      (messages:Message[])=>{
+
+          this.messages = messages;
+      }
+
+    );
   }
-
-  onAddMessage(message: Message){
-
-    this.messages.push(message);
-
-  }
-
 }
