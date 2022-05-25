@@ -1,8 +1,6 @@
 <div class="row">
-    <div class="col-md-5"><!-- Using a method could have worked, but since we only want to assign value of $event(recipe element being propagated) this way is better/simpler -->
-        <app-recipe-list
-            (recipeLinkEmitioncCaught)="recipeSelected = $event"
-        ></app-recipe-list>
+    <div class="col-md-5">
+        <app-recipe-list></app-recipe-list>
     </div>
     <div class="col-md-7">
         <app-recipe-detail
