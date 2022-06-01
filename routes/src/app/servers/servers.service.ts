@@ -28,6 +28,8 @@ export class ServersService {
   }
 
   getServer(id: number) {
+    // the find method uses an arrow function with s arg as each server in the search loop
+    // this function returns a server object
     const server = this.servers.find(
       (s) => {
         return s.id === id;
@@ -37,6 +39,8 @@ export class ServersService {
   }
 
   updateServer(id: number, serverInfo: {name: string, status: string}) {
+    // the find method uses an arrow function with s arg as each server in the search loop
+    // this function returns a server object
     const server = this.servers.find(
       (s) => {
         return s.id === id;

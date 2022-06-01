@@ -1,2 +1,9 @@
-<p>User with ID _ID_ loaded.</p>
-<p>User name is _NAME_</p>
+<p>User with ID {{user.id}} loaded.</p>
+<p>User name is {{user.name}}</p>
+
+<hr/>
+
+<!-- [routerlink] specifies what will be written in the url of the current path -->
+<!-- It takes path array excluding root: "root/[0]/[1]/[2]". Path -->
+<!-- has to already be defined in app.module.ts file -->
+<a [routerLink]="['/users', 10, 'anna']">Load Anna, with id:10</a>

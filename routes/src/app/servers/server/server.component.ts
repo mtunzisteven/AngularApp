@@ -13,7 +13,8 @@ export class ServerComponent implements OnInit {
   constructor(private serversService: ServersService) { }
 
   ngOnInit() {
-    this.server = this.serversService.getServer(1);
+    // initialize sever with the obj of server that has id=1
+    this.server = this.serversService.getServer(2);
   }
 
 }
