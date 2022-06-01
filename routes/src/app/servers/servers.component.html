@@ -3,7 +3,7 @@
       <div class="list-group">
         <!------------------------------- [routerLink] ----------------------------------->
         <!-- [routerlink] specifies what will be written in the url of the current path -->
-        <!-- It takes path array excluding root: "root/[0]/[1]/[2]". Path -->
+        <!-- It takes path array excluding root: "root/[0]/[1]". Path -->
         <!-- has to already be defined in app.module.ts file -->
 
         <!------------------------------- [queryParams] ----------------------------------->
@@ -15,7 +15,7 @@
         <!-- Ues: fragment = 'value' -->
 
         <a
-          [routerLink]="['/servers', 5, 'edit']"
+          [routerLink]="['/servers', server.id]"
           [queryParams]="{allowEdit: '1', allowTest: 2}"
           fragment="Loading"
           href="#"
@@ -26,10 +26,16 @@
       </div>
     </div>
     <div class="col-xs-12 col-sm-4">
-      <app-edit-server></app-edit-server>
+      
+      <!-- this router-outlet element is found within the servers.component.html -->
+      <!-- It holds all the html content of the components that use routing and --> 
+      <!-- are child routes of servers route as defined in the app.module.ts file-->
+      <router-outlet></router-outlet>
+
+      <!-- <app-edit-server></app-edit-server>
       <hr>
       <app-server></app-server>
-      <button class="btn btn-primary" (click)="onAnotherGotoServers()">Go to Servers</button>
+      <button class="btn btn-primary" (click)="onAnotherGotoServers()">Go to Servers</button> -->
     </div>
   </div>
   

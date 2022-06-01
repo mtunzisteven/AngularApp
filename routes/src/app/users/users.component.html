@@ -2,6 +2,7 @@
     <div class="col-xs-12 col-sm-4">
       <div class="list-group">
         <a
+          [routerLink]="['/users', user.id, user.name]"
           href="#"
           class="list-group-item"
           *ngFor="let user of users">
@@ -10,7 +11,12 @@
       </div>
     </div>
     <div class="col-xs-12 col-sm-4">
-      <app-user></app-user>
+
+      <!-- this router-outlet element is found within the users.component.html -->
+      <!-- It holds all the html content of the components that use routing and --> 
+      <!-- are child routes of users route as defined in the app.module.ts file-->
+      <router-outlet></router-outlet>
+      <!-- <app-user></app-user> -->
     </div>
   </div>
   

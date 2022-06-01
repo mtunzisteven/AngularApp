@@ -15,11 +15,13 @@ import { FormsModule } from '@angular/forms';
 // creating routes for the entire application
 const appRoutes: Routes = [
   {path:'', component: HomeComponent}, // localhost:4200 will open HomeComponent
-  {path:'users', component: UsersComponent}, // localhost:4200/users will open UsersComponent
-  {path:'users/:id/:name', component: UserComponent}, // localhost:4200/users/id will open UserComponent
-  {path:'servers', component: ServersComponent}, // localhost:4200/servers will open ServersComponent
-  {path:'servers/:id/edit', component: EditServerComponent}, // localhost:4200/servers/id/edit will open ServersComponent
-
+  {path:'users', component: UsersComponent, children:[
+    {path:':id/:name', component: UserComponent} // localhost:4200/users/id will open UserComponent
+  ]}, // localhost:4200/users will open UsersComponent
+  {path:'servers', component: ServersComponent, children:[
+    {path:':id', component: ServerComponent}, // localhost:4200/servers/id will open ServersComponent
+    {path:':id/edit', component: EditServerComponent} // localhost:4200/servers/id/edit will open ServersComponent
+  ]} // localhost:4200/servers will open ServersComponent
 ];
 
 @NgModule({
