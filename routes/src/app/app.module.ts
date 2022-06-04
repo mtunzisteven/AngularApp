@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { Routes, RouterModule } from '@angular/router';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -11,18 +10,14 @@ import { EditServerComponent } from './servers/edit-server/edit-server.component
 import { ServerComponent } from './servers/server/server.component';
 import { UserComponent } from './users/user/user.component';
 import { FormsModule } from '@angular/forms';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { AuthGaurd } from './auth-gaurd.service';
+import { AuthService } from './aurth.service';
+import { CanDeactivateGaurd } from './servers/edit-server/can-deactivate-gaurd.service';
+import { ErrorPageComponent } from './error-page/error-page.component';
+import { ServerResolver } from './servers/server-resolver.service';
 
-// creating routes for the entire application
-const appRoutes: Routes = [
-  {path:'', component: HomeComponent}, // localhost:4200 will open HomeComponent
-  {path:'users', component: UsersComponent, children:[
-    {path:':id/:name', component: UserComponent} // localhost:4200/users/id will open UserComponent
-  ]}, // localhost:4200/users will open UsersComponent
-  {path:'servers', component: ServersComponent, children:[
-    {path:':id', component: ServerComponent}, // localhost:4200/servers/id will open ServersComponent
-    {path:':id/edit', component: EditServerComponent} // localhost:4200/servers/id/edit will open ServersComponent
-  ]} // localhost:4200/servers will open ServersComponent
-];
+
 
 @NgModule({
   declarations: [
@@ -32,15 +27,22 @@ const appRoutes: Routes = [
     UsersComponent,
     EditServerComponent,
     ServerComponent,
-    UserComponent
+    UserComponent,
+    PageNotFoundComponent,
+    ErrorPageComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    RouterModule.forRoot(appRoutes) // this module registers the routes to Angular so it knows them as defined
+    AppRoutingModule 
   ],
-  providers: [],
+  providers: [
+    AuthGaurd, // this and the next service are for authentication
+    AuthService,
+    CanDeactivateGaurd,  // this service is for deactivating navigation away from routes
+    ServerResolver
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
