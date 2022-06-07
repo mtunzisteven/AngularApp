@@ -41,6 +41,14 @@ export class RecipeService{
         return this.recipes.slice();
     }
 
+    getRecipe(index: number){
+
+        // not returning copy of object because it's all the same
+        return this.recipes[index];
+
+    }
+
+
     addIngredientsToShoppingList(ingredients:Ingredient[]){
         this.shoppingListService.addIngredients(ingredients);
     }

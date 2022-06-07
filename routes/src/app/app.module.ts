@@ -34,8 +34,7 @@ import { ServerResolver } from './servers/server-resolver.service';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule,
-    AppRoutingModule 
+    FormsModule 
   ],
   providers: [
     AuthGaurd, // this and the next service are for authentication
