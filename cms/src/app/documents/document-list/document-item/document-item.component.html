@@ -1,4 +1,4 @@
-<a class="list-group-item clearfix documentDiv" >
+<a class="list-group-item clearfix documentDiv" routerLinkActive="active" [routerLink]="['/documents', document.id]">
   <!-- Display document name here -->
   <strong>{{document.name}}</strong>
   <p>{{document.description}}</p>

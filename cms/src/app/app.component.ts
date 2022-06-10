@@ -7,9 +7,5 @@ import { Component, Input } from '@angular/core';
 })
 export class AppComponent {
 
-  navSelected: string;
 
-  switchView(selectedFeature: string){
-    this.navSelected = selectedFeature;
-  }
 }

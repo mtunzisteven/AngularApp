@@ -20,11 +20,22 @@ export class ContactListComponent implements OnInit {
 
     // assign contacts list to the copy of contacts list provided in the contact service
     this.contacts = this.contactService.getContacts();
-  }
 
-   // The custom event and data are emitted
-   onSelected(contactEl: Contact){
-    this.contactService.contactSelectedEvent.emit(contactEl);
+    // we subscribe to the event emitter that monitors
+    // the deletion of contacts in the contacts array
+    this.contactService.contactChangedEvent.subscribe(
+
+      // the contact array passsed to the event Emitter in contact Service
+      // retrieved for use in this subscription.
+      (contacts: Contact[])=>{
+
+        // update the contacts in the contact list with the up to date 
+        // contacts from the contact service
+        this.contacts = contacts;
+
+      }
+
+    );
   }
 
 }

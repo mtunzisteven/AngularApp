@@ -11,10 +11,18 @@
                 <img class="media-object" style="max-height:80px;" src="{{contact.imageUrl}}" alt="{{contact.name}}" >                
             </div>
             <div class="col-xs-3">
-                <button class="btn btn-primary .pull-right" style="margin:25px 0 5px 40%;">Edit</button>
+                <a 
+                    class="btn btn-primary .pull-right" 
+                    style="margin:25px 0 5px 40%; cursor:pointer;"
+                    [routerLink]="['/contacts', contact.id, 'edit']"
+                    >Edit</a>
             </div>
             <div class="col-xs-3">
-                <button class="btn btn-danger .pull-right" style="margin:25px 0 5px 0;">Delete</button>
+                <button 
+                    class="btn btn-danger .pull-right" 
+                    style="margin:25px 0 5px 0;"
+                    (click)="deleteContact()"
+                    >Delete</button>
             </div>
         </div>
     </div>

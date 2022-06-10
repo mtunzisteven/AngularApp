@@ -1,4 +1,9 @@
-<a href="#" class="list-group-item" #clickedContactItem>
+<a 
+    href="#" 
+    class="list-group-item" 
+    [routerLink]="['/contacts', contact.id]"
+    routerLinkActive="active"
+    >
     <div class="media">
         <div class="media-body">
             <h4 class="media-heading">Bro. {{contact.name}}</h4>

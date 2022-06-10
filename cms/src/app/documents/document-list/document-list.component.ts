@@ -18,10 +18,18 @@ export class DocumentListComponent implements OnInit {
 
     this.documents = this.documentService.getDocuments();
 
-  }
+    this.documentService.documentChangedEvent.subscribe(
 
-  onSelectedDocument(document: Document){
-    this.documentService.selectedDocumentEvent.emit(document);
+      // this subscription to the documentChangedEvent receives
+      // an updated array upon change in the DocumentService documents 
+      (documents: Document[]) => {
+
+        this.documents = documents; // update the document we initialized in this file
+
+      }
+
+    );
+
   }
 
 }
