@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Ingredient } from '../shared/ingredient.model';
 import { ShoppingListService } from './shopping-list.service';
 
@@ -8,7 +9,9 @@ import { ShoppingListService } from './shopping-list.service';
   templateUrl: './shopping-list.component.html',
   styleUrls: ['./shopping-list.component.css']
 })
-export class ShoppingListComponent implements OnInit {
+export class ShoppingListComponent implements OnInit, OnDestroy {
+
+  private ingredientsChangeSubscription: Subscription;
   
   // a list of ingredients, as defined in the ingredients model
   ingredients: Ingredient[] = [];
@@ -20,7 +23,7 @@ export class ShoppingListComponent implements OnInit {
     // access the copy of ingredients array inside the service
     this.ingredients = this.shoppingListService.getIngredients();
 
-    this.shoppingListService.ingredientsChanged.subscribe(
+    this.ingredientsChangeSubscription = this.shoppingListService.ingredientsChanged.subscribe(
 
       // this ingredients array will be emitted each time a new ingredient 
       // is added to the ingredients in the shopping-list service, thus
@@ -30,6 +33,13 @@ export class ShoppingListComponent implements OnInit {
       }
 
     );
+  }
+
+  ngOnDestroy(): void {
+
+    // cleanup subscription to avoid memory leaks
+    this.ingredientsChangeSubscription.unsubscribe();
+    
   }
 
 }

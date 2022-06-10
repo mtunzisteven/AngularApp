@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Ingredient } from "../shared/ingredient.model";
 import { ShoppingListService } from "../shopping-list/shopping-list.service";
 import { Recipe } from "./recipe.model";
@@ -7,8 +7,12 @@ import { Recipe } from "./recipe.model";
 export class RecipeService{
 
     // Recipe sected click event emitter to inform components of the event
-    recipeSelected = new EventEmitter<Recipe>(); 
+    // recipeSelected = new EventEmitter<Recipe>(); 
 
+    // Subject is a beter way to communicate accross components than EventEmitter
+    // recipeSelected = new Subject<Recipe>();
+
+    
     constructor(private shoppingListService: ShoppingListService){}
 
     // an array that holds an array of recipes as defined in the recipe model

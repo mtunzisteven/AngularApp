@@ -1,10 +1,15 @@
-import { EventEmitter } from "@angular/core";
+import { Subject } from "rxjs";
 import { Ingredient } from "../shared/ingredient.model";
 
 export class ShoppingListService{
 
     // emitter of new ingredient information
-    ingredientsChanged = new EventEmitter<Ingredient[]>()
+    // ingredientsChanged = new EventEmitter<Ingredient[]>();
+
+    // Subject is a special observable that is a better way
+    // to emit events than EventEmitter
+    ingredientsChanged = new Subject<Ingredient[]>();
+
     
     // a list of ingredients, as defined in the ingredients model
     private ingredients: Ingredient[] = [
@@ -26,7 +31,7 @@ export class ShoppingListService{
         this.ingredients.push(ingredient);
 
         // reflect the changes to ingredients by emitting a copy of the ingredients array
-        this.ingredientsChanged.emit(this.ingredients.slice());
+        this.ingredientsChanged.next(this.ingredients.slice());
 
     }
 
@@ -38,6 +43,6 @@ export class ShoppingListService{
         this.ingredients.push(...ingredients);
 
         // Reflect the changes to ingredients by emitting a copy of the ingredients array
-        this.ingredientsChanged.emit(this.ingredients.slice());
+        this.ingredientsChanged.next(this.ingredients.slice());
     }
 }

@@ -12,7 +12,7 @@ import { ShoppingListComponent } from './shopping-list/shopping-list.component';
 const appRoutes: Routes = [
   {path:'', redirectTo: '/recipes', pathMatch: 'full'}, // localhost:4200 will open AppComponent
   {path:'recipes', component: RecipesComponent, children: [
-    {path:'', component: RecipeStartComponent},
+    {path:'', component: RecipeStartComponent}, // on the same url as the parent route, show this componentsymultaneisly
     {path:'new', component: RecipeEditComponent}, // must be above :id route because Angular will confuse new for :id otherwise
     {path:':id', component: RecipeDetailComponent},
     {path:':id/edit', component: RecipeEditComponent}
