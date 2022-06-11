@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Contact } from '../contact.model';
 import { ContactService } from '../contact.service';
 
@@ -7,10 +8,13 @@ import { ContactService } from '../contact.service';
   templateUrl: './contact-list.component.html',
   styleUrls: ['./contact-list.component.css']
 })
-export class ContactListComponent implements OnInit {
+export class ContactListComponent implements OnInit, OnDestroy {
 
   // in quotes is the name that was used as ref in html template
   @ViewChild('clickedContactItem', {static: false}) selectedContact: ElementRef;
+
+  //Declare subscription type variable, which will hold the subscription to contacts changes
+  contactChangesSubsciprtion: Subscription;
 
   contacts:Contact[] = [];
 
@@ -23,19 +27,26 @@ export class ContactListComponent implements OnInit {
 
     // we subscribe to the event emitter that monitors
     // the deletion of contacts in the contacts array
-    this.contactService.contactChangedEvent.subscribe(
+    // we assign the subscription to the subscription type variable, so we caunsub in OnDestroy
+    this.contactChangesSubsciprtion = this.contactService.contactListChangedEvent.subscribe(
 
       // the contact array passsed to the event Emitter in contact Service
       // retrieved for use in this subscription.
-      (contacts: Contact[])=>{
+      (contactList: Contact[])=>{
 
         // update the contacts in the contact list with the up to date 
         // contacts from the contact service
-        this.contacts = contacts;
+        this.contacts = contactList;
 
       }
 
     );
+  }
+
+  ngOnDestroy(): void {
+
+    // unsubscribe to the contact changes subscription to avoid data leaks
+    this.contactChangesSubsciprtion.unsubscribe();
   }
 
 }
