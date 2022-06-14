@@ -1,0 +1,122 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form (ngSubmit)="onSubmit()" #f="ngForm">
+        <!-- (ngSubmit) is fired each time the form is submitted-->        
+        <!-- #f is a reference to the form and can be used with "(ngSubmit)='onSubmit(f)' #f='ngForm'" or -->
+        <!-- "@ViewChild('f') varname;" decorator with "(ngSubmit)='onSubmit()' #f='ngForm'"-->
+        <!-- #f="ngForm" tells Angular to give access to the JS form obj of this form, created by Angular  -->
+        <!-- f in "(ngSubmit)='onSubmit(f)'" or "@ViewChild('f') varname;" decorator can only be used if #f is included in the form tag as a reference -->
+        <div 
+          id="user-data" 
+          ngModelGroup="userData"
+          #userData="ngModelGroup"
+          >
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input 
+              type="text" 
+              id="username" 
+              class="form-control"
+              name="username"
+              required
+              ngModel
+              #name="ngModel"
+              >
+              <!-- ngModel here tells Angular that this is an input -->
+              <!-- Angular tracks the validity and state of forms & inputs, adding classes to notify us of these -->
+              <!-- classes include ng-valid/ng-invalid, ng-dirty/ng-pristine, ng-touched -->
+              <!-- #name="ngModel" exposes the input, so that we can reference it elsewhere as in the span below -->
+              <span class="help-block" *ngIf="!name.valid && name.touched"> Please enter a valid Name!</span>
+          </div>
+          <button 
+            class="btn btn-default" 
+            type="button"
+            (click)="suggestUsername()"
+            >
+              Suggest an Username
+            </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input 
+              type="email" 
+              id="email" 
+              class="form-control"
+              name="email"
+              required
+              email
+              ngModel
+              #email="ngModel"
+              >
+              <!-- email here tells Angular that this is an email input and Angular will validate it as such -->
+              <!-- ngModel here tells Angular that this is an input -->
+              <!-- Angular tracks the validity and state of forms & inputs, adding classes to notify us of these -->
+              <!-- classes include ng-valid/ng-invalid, ng-dirty/ng-pristine, ng-touched -->
+              <!-- #email="ngModel" exposes the input, so that we can reference it elsewhere as in the span below -->
+              <span class="help-block" *ngIf="!email.valid && email.touched"> Please enter a valid email!</span>
+
+          </div>
+        </div>
+        <!-- ngModelGroup does what ngModel does to an indivual input, but to a group of inputs -->
+        <!-- ngModelGroup is set to a value, which becomes the name for the group used to set its validity and states -->
+        <!-- #userGroup = "ngModelGroup" gives us a reference we can use to access the group and its validity and states -->
+        <!-- Here, userData.valid && userData.touched  can now be used elsewhere in the DOM, as below -->
+        <span class="help-block" *ngIf="!userData.valid && userData.touched"> User data is invalid!!</span>
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <select 
+            id="secret" 
+            class="form-control"
+            name="secret"
+            [ngModel]="defaultValue">
+            <!-- ngModel here tells Angular that this is an input -->
+            <!-- [ngModel]='defaultValue' here uses one-way property binding to preselect a default value -->
+            <!-- The pre selected defalut value is pet, as defined in the component.ts file -->
+            <option value="pet">Your first pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea 
+            rows="3"
+            id="message" 
+            class="form-control"
+            name="message"
+            [(ngModel)]="messageOutput"
+            >
+          </textarea>
+        </div>
+        <!-- [(ngModel)]="messageOutput" here uses two-way property binding to react to input in real time -->
+        <!-- The real time reaction to this textarea is in the span below: {{messageOutput}} -->
+        <span class="help-block">Your Message: {{messageOutput}}</span>
+        <div 
+          class="radio"
+          *ngFor="let gender of genders"
+          >
+          <label>
+            <input 
+              type="radio"
+              name="gender"
+              ngModel
+              [value]="gender"
+              required
+              >
+            {{gender}}
+          </label>
+        <!-- all radio inputs will have radio name, since one will be selected -->
+        <!-- ngModel tells Angular this is an input, and it adds js obj with states and validity -->
+        <!-- value and label name for each button is each element value of the array {{gender}} -->
+
+        </div>
+
+        <!-- we disable the form submit button if the form is invalid(ng-invalid) : f is reference to form using #f ref-->
+        <button 
+          class="btn btn-primary" 
+          type="submit"
+          [disabled]="f.invalid"
+          >submit</button>
+      </form>
+    </div>
+  </div>
+</div>
