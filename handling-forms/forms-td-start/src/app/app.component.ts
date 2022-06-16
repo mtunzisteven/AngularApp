@@ -8,6 +8,18 @@ import { NgForm } from '@angular/forms';
 })
 export class AppComponent {
 
+  // user object will hold the data entered by the user, and will be updated on submit
+  user = {
+    username:'',
+    email:'',
+    secretQuestion:'',
+    answer:'',
+    gender:''
+  };
+
+  // variable that will help us monitor that the form has indeed been submitted
+  formSubmitted = false;
+
   // the default value that is passed to the ngModel through dataa binding in the select tag
   // pet is the value of one of the option inside the select element.
   defaultValue = 'teacher';
@@ -55,6 +67,19 @@ export class AppComponent {
   // }
 
   onSubmit(){
-    console.log(this.signupForm.value.email);
+
+    this.formSubmitted = true;
+
+    //---------------------------------------------------------userData group values
+    this.user.username = this.signupForm.value.userData.username;
+    this.user.email = this.signupForm.value.userData.email;
+    //---------------------------------------------------------userData group end
+    this.user.secretQuestion = this.signupForm.value.secret;
+    this.user.answer = this.signupForm.value.answer;
+    this.user.gender = this.signupForm.value.gender;
+
+    // this line will simply clear all values, states, and validity of the form set by th euser and Angular
+    this.signupForm.reset();
+
   }
 }
