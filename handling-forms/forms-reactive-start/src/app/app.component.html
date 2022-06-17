@@ -1,28 +1,94 @@
 <div class="container">
   <div class="row">
     <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
-      <form>
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            class="form-control">
+      <!-- [formGroup]="signupForm" tells Angular to sync this form with the one we ce created in ts file -->
+      <form [formGroup]="signupForm" (submit)="onSubmit()">
+
+        <!-- formGroupName="userData" tells Angular which nested formGroup to connect this element and its children with -->
+        <div formGroupName="userData">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <!-- formControlName="username" tells Angular what formControl to connect with. -->
+            <!-- [formControlName]="'username'" does the same but cumbersom since we're looking for a string. -->
+            <input
+              type="text"
+              id="username"
+              formControlName="username"
+              class="form-control">
+          </div>
+          <span 
+            class="help-block"
+            *ngIf="!signupForm.get('userData.username').valid && signupForm.get('userData.username').touched"
+            >
+            <span 
+              class="help-block"
+              *ngIf="signupForm.get('userData.username').errors['nameIsForbidden']"
+              > The username "{{ forbiddeName }}" is not a allowed!
+            </span><!-- this error will be triggered when touched, invalid due to custom error: nameIsForbidden validation error -->
+            <span 
+              class="help-block"
+              *ngIf="signupForm.get('userData.username').errors['required']"
+              > This field is required!
+            </span><!-- this error will be triggered when touched, invalid due to empty input: required validation error -->
+          </span><!-- signupForm.get('userData.username') take arg: path, wich is written userData.username, for username nested in userData -->
+  
+          <div class="form-group">
+            <label for="email">email</label>
+            <!-- formControlName="email" tells Angular whhat formControl to connect with. -->
+            <!-- [formControlName]="'email'" does the same but cumbersom since we're looking for a string. -->
+            <input
+              type="text"
+              id="email"
+              formControlName="email"
+              class="form-control">
+          </div>
+          <span 
+            class="help-block"
+            *ngIf="!signupForm.get('userData.email').valid && signupForm.get('userData.email').touched"
+            >Please enter a valid email!
+          </span><!-- signupForm.get('userData.email') take arg: path, wich is written userData.email, for email nested in userData -->
         </div>
-        <div class="form-group">
-          <label for="email">email</label>
-          <input
-            type="text"
-            id="email"
-            class="form-control">
-        </div>
+
         <div class="radio" *ngFor="let gender of genders">
           <label>
+          <!-- formControlName="gender" tells Angular whhat formControl to connect with. -->
+          <!-- [formControlName]="'gender'" does the same but cumbersom since we're looking for a string. -->
             <input
               type="radio"
+              formControlName="gender" 
               [value]="gender">{{ gender }}
           </label>
         </div>
+
+        <!-- FormArraY]y is an array that holds form controls. Each control is added by the user dynamically -->
+        <!-- formArrayName="hobbies" tells Angular which FormArray to connect this element and its children with -->
+        <div formArrayName="hobbies">
+          <h4>Your Hobbies</h4>
+          <!-- User clicks this button to add a form control. type ,ust never be submit, obviously -->
+          <button 
+            class="btn btn-dafault" 
+            type="button" 
+            (click)="onAddHobbies()">Add Hobbies</button>
+
+            <!-- This div becomes the parent form group of the items within a FormArray -->
+            <!-- ngFor used to call a fn we created in the ts file and it returns the controls -->
+            <div 
+              class="form-group" 
+              *ngFor="let hobbyControl of getControls(); let i = index">
+
+              <!-- We can only access the FormArray controls using the names:indexes of the array -->
+              <!-- Since index is not a string, we must use property binding [formControlName]="i" to assign the control names-->
+              <input type="text" class="form-control" [formControlName]="i">
+            </div>
+        </div>
+
+        <!-- Overall form validation check -->
+        <span 
+          class="help-block"
+          *ngIf="!signupForm.valid && signupForm.touched"
+          > Invalid form inputs!
+        </span>
+
         <button class="btn btn-primary" type="submit">Submit</button>
       </form>
     </div>
