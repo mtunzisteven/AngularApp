@@ -9,7 +9,7 @@ export class DropdownDirective {
     constructor(){}
 
     // This host binding decorative will add a class name of 'open'
-    // to the element we bind to whenever openToggle is true. 
+    // to the element we bind to whenever openToggle is true and remove it when it is false. 
     // in the html template, just add the directive name as follows: appDropdown
     // this is how Angular will know where to add the class of 'open'
     @HostBinding('class.open') openToggle = false;

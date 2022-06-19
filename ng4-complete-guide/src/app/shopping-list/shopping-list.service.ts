@@ -10,6 +10,10 @@ export class ShoppingListService{
     // to emit events than EventEmitter
     ingredientsChanged = new Subject<Ingredient[]>();
 
+    // Subject is a special observable that is a better way
+    // to emit events than EventEmitter
+    startedEditing = new Subject<number>();
+
     
     // a list of ingredients, as defined in the ingredients model
     private ingredients: Ingredient[] = [
@@ -25,10 +29,37 @@ export class ShoppingListService{
 
     }
 
+    getIngredient(index: number){
+
+        // return an item selected by the index
+        return this.ingredients[index];
+
+    }
+
     addIngredient(ingredient: Ingredient){
         // add the ingredients to the ingredients array
         // that is the only change we'll allow to this original array
         this.ingredients.push(ingredient);
+
+        // reflect the changes to ingredients by emitting a copy of the ingredients array
+        this.ingredientsChanged.next(this.ingredients.slice());
+
+    }
+
+    updateIngredient(index: number, ingredient: Ingredient){
+
+        // replace the ingredient found using index with the one we've receieved
+        this.ingredients[index] = ingredient;
+
+        // reflect the changes to ingredients by emitting a copy of the ingredients array
+        this.ingredientsChanged.next(this.ingredients.slice());
+
+    }
+
+    deleteIngredient(index: number){
+
+        // delete the ingrient found using its index from the array of ingredients
+        this.ingredients.splice(index, 1);
 
         // reflect the changes to ingredients by emitting a copy of the ingredients array
         this.ingredientsChanged.next(this.ingredients.slice());

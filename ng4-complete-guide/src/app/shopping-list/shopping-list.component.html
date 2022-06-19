@@ -6,8 +6,16 @@
             <a 
                 class="list-group-item" 
                 style="cursor: pointer"
-                *ngFor="let ingredient of ingredients"
+                *ngFor="let ingredient of ingredients; let i = index"
+                (click)="onEditItem(i)"
             >
+                <!-- To be clear, the a tag holds each Shopping item, therefore,  -->
+                <!-- the all the code contained in each a tag will represent  -->
+                <!-- one shopping list item. The click listener will transmit -->
+                <!-- data about which a tag(item) was selected using a type -->
+                <!-- Subject observable declared in the shopping list service -->
+                <!-- This data will then be emitted to the ahopping-edit child -->
+                <!-- of this component -->
                 {{ingredient.name}} ({{ingredient.amount}}) 
             </a>
         </ul>

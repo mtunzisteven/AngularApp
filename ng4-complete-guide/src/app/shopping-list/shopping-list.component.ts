@@ -42,4 +42,10 @@ export class ShoppingListComponent implements OnInit, OnDestroy {
     
   }
 
+  onEditItem(index: number){
+
+    // emit that editing has started using a subject
+    this.shoppingListService.startedEditing.next(index);
+    
+  }
 }
