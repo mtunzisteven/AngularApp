@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Contact } from '../contact.model';
 
 @Component({
   selector: 'app-contact-edit',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ContactEditComponent implements OnInit {
 
+  groupContacts: Contact[];
+
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  onCancel(){
+    
   }
 
 }
