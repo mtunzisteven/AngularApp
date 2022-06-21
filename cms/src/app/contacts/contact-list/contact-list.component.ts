@@ -25,6 +25,19 @@ export class ContactListComponent implements OnInit, OnDestroy {
     // assign contacts list to the copy of contacts list provided in the contact service
     this.contacts = this.contactService.getContacts();
 
+    // // sort contacts by id
+    // this.contacts = this.contacts.sort((n1,n2) => {
+    //     if (+n1.id > +n2.id) {
+    //         return 1;
+    //     }
+    
+    //     if (+n1.id < +n2.id) {
+    //         return -1;
+    //     }
+    
+    //     return 0;
+    // });
+
     // we subscribe to the event emitter that monitors
     // the deletion of contacts in the contacts array
     // we assign the subscription to the subscription type variable, so we caunsub in OnDestroy

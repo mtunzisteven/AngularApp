@@ -1,15 +1,20 @@
 <div class="panel panel-default">
     <div class="panel-body">
-      <form id="contact-edit">
+      <form id="contact-edit" (ngSubmit)="onSubmit(f)" #f="ngForm">
         <div class="row">
           <div class="col-sm-12 form-group">
             <label for="name">Name:</label>
             <input
               type="text"
               id="name"
+              name="name"
               class="form-control required"
               size="120"
-              max="120">
+              max="120"
+              [ngModel]="contact.name"
+              #name="ngModel"
+              required
+              >
           </div>
         </div>
   
@@ -19,9 +24,20 @@
             <input
               type="text"
               id="email"
+              name="email"
               class="form-control required"
               size="120"
-              max="255">
+              max="255"
+              [ngModel]="contact.email"
+              #email="ngModel"
+              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
+              required
+              >
+            <div 
+              *ngIf="!email.valid && email.touched"
+              class="alert alert-danger"
+              >Enter a valid Email address.
+            </div>
           </div>
         </div>
   
@@ -31,10 +47,19 @@
             <input
               type="text"
               id="phone"
+              name="phone"
               class="form-control invalid"
               size="150"
-              max="255">
-  
+              max="255"
+              [ngModel]="contact.phone"
+              #phone="ngModel"
+              pattern="\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*"
+              ><!-- pattern: 3 +numbers - 3 +numbers - 4 +numbers -->
+            <div 
+                *ngIf="!phone.valid && phone.touched"
+                class="alert alert-danger"
+                >Enter a valid phone number.
+            </div>
           </div>
         </div>
   
@@ -44,9 +69,13 @@
             <input
               type="text"
               id="imageUrl"
+              name="imageUrl"
               class="form-control"
               size="150"
-              max="255">
+              max="255"
+              [ngModel]="contact.imageUrl"         
+              #imageUrl="ngModel"     
+              >
           </div>
         </div>
   
@@ -55,7 +84,11 @@
             <label for="groupList">Group Contacts:</label>
   
             <div class="row" id="groupList"
-                style="min-height: 3rem;" >
+                style="min-height: 3rem;" 
+                dnd-droppable
+                [dropZones]="['contactGroup']"
+                (onDropSuccess)="addTOGroup($event)"
+                >
   
               <div *ngFor="let contact of groupContacts; let i = index">
                 <div>
@@ -69,10 +102,19 @@
           </div>
         </div>
   
-  
+        <div 
+            *ngIf="!email.valid || !email.valid"
+            class="alert alert-danger"
+            >The Name and Email fields are required.
+        </div>
         <div class="row">
           <div class="col-xs-12 btn-toolbar">
-            <button class="btn btn-success" type="submit">Save</button>
+            <button 
+                class="btn btn-success" 
+                type="submit"
+                [disabled]="!f.valid"
+                >Save
+            </button>
             <button class="btn btn-primary" type="button" (click)="onCancel()">Cancel</button>
           </div>
         </div>

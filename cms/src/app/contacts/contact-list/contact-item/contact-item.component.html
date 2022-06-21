@@ -1,14 +1,14 @@
 <a 
     href="#" 
     class="list-group-item" 
-    [routerLink]="['/contacts', contact.id]"
-    routerLinkActive="active"
+    [routerLink]="contact.imageUrl !=' '? ['/contacts', contact.id]:['/contacts']"
+    [routerLinkActive]="contact.imageUrl !=' '? 'active':''"
     >
     <div class="media">
         <div class="media-body">
-            <h4 class="media-heading">Bro. {{contact.name}}</h4>
+            <h4 class="media-heading">{{contact.name}}</h4>
         </div>
-        <div class="media-right">
+        <div class="media-right" *ngIf="contact.imageUrl != ' '">
             <img class="media-object" style="max-height:50px;" src="{{contact.imageUrl}}" alt="{{contact.name}}">
         </div>
     </div>
