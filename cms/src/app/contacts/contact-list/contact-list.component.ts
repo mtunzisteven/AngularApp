@@ -23,20 +23,7 @@ export class ContactListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     // assign contacts list to the copy of contacts list provided in the contact service
-    this.contacts = this.contactService.getContacts();
-
-    // // sort contacts by id
-    // this.contacts = this.contacts.sort((n1,n2) => {
-    //     if (+n1.id > +n2.id) {
-    //         return 1;
-    //     }
-    
-    //     if (+n1.id < +n2.id) {
-    //         return -1;
-    //     }
-    
-    //     return 0;
-    // });
+    this.contacts = this.organizer(this.contactService.getContacts());
 
     // we subscribe to the event emitter that monitors
     // the deletion of contacts in the contacts array
@@ -49,7 +36,7 @@ export class ContactListComponent implements OnInit, OnDestroy {
 
         // update the contacts in the contact list with the up to date 
         // contacts from the contact service
-        this.contacts = contactList;
+        this.contacts = this.organizer(contactList);
 
       }
 
@@ -60,6 +47,53 @@ export class ContactListComponent implements OnInit, OnDestroy {
 
     // unsubscribe to the contact changes subscription to avoid data leaks
     this.contactChangesSubsciprtion.unsubscribe();
+  }
+
+  organizer(contacts: Contact[]){
+
+    const newContacts = [];
+    const indexes = [];
+
+    contacts.forEach(contact=>{
+
+      if(contact.group == null){
+
+        newContacts.push(contact);
+
+      }else{
+        
+        newContacts.push(contact);
+
+        contact.group.forEach(groupie=>{
+
+          let index = newContacts.findIndex(contact => {
+
+            if (contact.id === groupie.id) {
+              return true;
+            }
+          
+            return false;
+
+          });
+
+          if(index !== -1){
+
+            newContacts.splice(index, 1);
+
+          }
+
+          newContacts.push(groupie);
+
+
+        });
+      }
+
+    });
+
+    console.log(newContacts);
+
+    return newContacts;
+
   }
 
 }

@@ -31,4 +31,10 @@
         <li class="list-group-item"><strong>Email:</strong> {{contact.email}} </li>
         <li class="list-group-item"><strong>Phone:</strong> {{contact.phone}} </li>
     </ul>
+    <ul class="list-group" >
+        <cms-contact-item 
+            *ngFor="let groupedContact of contact.group;"
+            [contact]="groupedContact" 
+        ></cms-contact-item>
+    </ul>
 </div>

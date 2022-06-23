@@ -22,10 +22,11 @@
         <!-- Here we see a parent component passing data down to its children effortlessly through the html template -->
         <!-- You need to use special decorators in the component.ts file to access data from child to parent or between sibling components -->
         <!-- CHild to parent uses @ViewChild while between siblings uses @ -->
-        <ul class="list-group" *ngFor="let contactEl of contacts;">
-            <cms-contact-item
-                [contact]="contactEl" 
-                dnd-draggable
+        <ul class="list-group" >
+            <cms-contact-item 
+                *ngFor="let contact of contacts;"
+                [contact]="contact" 
+                dnd-draggable [dragEnabled]="true" [dragData]="contact" [dropZones]="['contactGroup']"
             ></cms-contact-item>
         </ul>
       
