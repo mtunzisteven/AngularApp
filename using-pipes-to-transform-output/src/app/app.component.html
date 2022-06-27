@@ -1,0 +1,41 @@
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <input type="text" [(ngModel)]="filteredStatus" >
+      <br>
+      <button 
+        class="btn btn-primary" 
+        (click)="onAddServer()"
+        style="margin-top: 15px;"
+        >Add Server</button>
+      <hr />
+      <!-- Since pipes are used to transform the output, they are used in the -->
+      <!-- html template, when we output data using string interpolation for an example -->
+      <!-- a pipe is the symol that shares a key with backslash on the keyboard -->
+      <!-- Example: {{varName | pipeName: 'pipePar1': 'pipePar2': 'pipePar3'}} -->
+      <!-- Pipes can be chained by simply adding another pipe and the name as follows -->
+      <!-- Example: {{varName | pipeName1: 'pipePar1': 'pipePar2': 'pipePar3' | pipename2}} -->
+      <!-- Order of chaning pipes matters. Wrong order may cause errors -->
+      <!-- *ngFor outputs data as well, so we can use pipe with it as follows: -->
+      <!-- Example: {{varName | pipeName1: 'pipePar1': 'pipePar2': 'pipePar3' | pipename2}} -->
+      <!-- After output has been sent out, piped data changes to data can't be update -->
+      <!-- async updates piped data after output is sent: like in database requests -->
+      <h2>Server Status: {{ serverStatus | async }}</h2> 
+      <ul class="list-group">
+        <li
+          class="list-group-item"
+          *ngFor="let server of servers | sorter: 'instanceType' | filter: filteredStatus : 'status'"
+          [ngClass]="getStatusClasses(server)">
+          <span
+            class="badge">
+            {{ server.status }}
+          </span>
+          <strong>{{ server.name | shortener: 20}} </strong> | 
+          {{ server.instanceType | uppercase | reverser}} |  
+          {{ server.started | date:'fullDate' }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
