@@ -13,6 +13,8 @@ export class ContactListComponent implements OnInit, OnDestroy {
   // in quotes is the name that was used as ref in html template
   @ViewChild('clickedContactItem', {static: false}) selectedContact: ElementRef;
 
+  term: string;
+
   //Declare subscription type variable, which will hold the subscription to contacts changes
   contactChangesSubsciprtion: Subscription;
 
@@ -94,6 +96,10 @@ export class ContactListComponent implements OnInit, OnDestroy {
 
     return newContacts;
 
+  }
+
+  search(value: string){
+    this.term = value;
   }
 
 }

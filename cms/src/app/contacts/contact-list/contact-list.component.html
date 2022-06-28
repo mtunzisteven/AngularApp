@@ -1,20 +1,26 @@
 <div class="panel panel-default">
 
     <!-- Default panel contents -->
-    <div class="panel-heading">
-        <div class="row">
-            <div class="col-xs-6">
-                <h2 style="display:inline; margin-top:10px;">Contacts</h2>                
+    <div class="row">
+        <div class="col-xs-12">
+          <div class="panel panel-default">
+            <div class="panel-heading" style="padding: 15px 25px;">
+              <div class="row">
+                <span class="title pad-left-right">Contacts</span>
+              </div>
+              <div class="row">
+                <div class="input-group pull-left pad-left-right col-xs-7">
+                  <input class="form-control" type="text" placeholder="Enter a search value" #searchBox (keyup)="search(searchBox.value)"/>
+                  <div class="glyphicon glyphicon-search input-group-addon" (click)="search(searchBox.value)"></div>
+                </div>
+                <div class="pull-right pad-left-right">
+                  <a class="btn btn-success" [routerLink]="['new']">New Contact</a>
+                </div>
+              </div>
             </div>
-            <div class="col-xs-6">
-                <button 
-                    class="btn btn-success .pull-right" 
-                    style="margin-left:40%; margin-right:0;"
-                    routerLink="new"
-                    >New contact</button>
-            </div>
+          </div>
         </div>
-    </div>
+      </div>
 
     <div class="panel panel-default" style="margin: 15px 25px;">
 
@@ -24,10 +30,10 @@
         <!-- CHild to parent uses @ViewChild while between siblings uses @ -->
         <ul class="list-group" >
             <cms-contact-item 
-                *ngFor="let contact of contacts;"
+                *ngFor="let contact of contacts | contactsFilter: term"
                 [contact]="contact" 
                 dnd-draggable [dragEnabled]="true" [dragData]="contact" [dropZones]="['contactGroup']"
-            ></cms-contact-item>
+            >{{ term }}</cms-contact-item>
         </ul>
       
     </div>
