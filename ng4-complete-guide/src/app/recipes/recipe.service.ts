@@ -17,26 +17,29 @@ export class RecipeService{
     constructor(private shoppingListService: ShoppingListService){}
 
     // an array that holds an array of recipes as defined in the recipe model
-    private recipes: Recipe[] = [
-        new Recipe(
-            'myRecipe','My test recipe', 
-            'https://cdn.pixabay.com/photo/2016/06/15/19/09/food-1459693_960_720.jpg' ,
-            [
-                new Ingredient('tasty ingredient item', 5),
-                new Ingredient('a second tasty ingredient item', 1),
+    // private recipes: Recipe[] = [
+    //     new Recipe(
+    //         'myRecipe','My test recipe', 
+    //         'https://cdn.pixabay.com/photo/2016/06/15/19/09/food-1459693_960_720.jpg' ,
+    //         [
+    //             new Ingredient('tasty ingredient item', 5),
+    //             new Ingredient('a second tasty ingredient item', 1),
 
-            ]
-            ), 
-        new Recipe(
-            '2nd Recipe', 'This one is a test', 
-            'https://cdn.pixabay.com/photo/2016/06/15/19/09/food-1459693_960_720.jpg',
-            [
-                new Ingredient('2nd tasty ingredient item', 5),
-                new Ingredient('2nd a second tasty ingredient item', 1),
+    //         ]
+    //         ), 
+    //     new Recipe(
+    //         '2nd Recipe', 'This one is a test', 
+    //         'https://cdn.pixabay.com/photo/2016/06/15/19/09/food-1459693_960_720.jpg',
+    //         [
+    //             new Ingredient('2nd tasty ingredient item', 5),
+    //             new Ingredient('2nd a second tasty ingredient item', 1),
 
-            ]
-            )
-    ];
+    //         ]
+    //         )
+    // ];
+
+    // an array that holds an array of recipes as defined in the recipe model
+    private recipes: Recipe[] = [];
 
     getRecipes(){
         // if we return only the recipe array, when changes are made
@@ -85,5 +88,14 @@ export class RecipeService{
 
     addIngredientsToShoppingList(ingredients:Ingredient[]){
         this.shoppingListService.addIngredients(ingredients);
+    }
+
+    setRecipes(recipes){
+
+        // this overrides this.recipes with recipe
+        this.recipes = recipes;
+
+        // emit recipes changes throughout app with copy  of recipes
+        this.recipeUpdated.next(this.recipes.slice())
     }
 }

@@ -33,7 +33,6 @@ export class RecipeListComponent implements OnInit, OnDestroy {
         (recipes: Recipe[]) => {
     
           this.recipes = recipes;     
-          console.log(this.recipes);
 
         }
       );

@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { RecipeDetailComponent } from './recipes/recipe-detail/recipe-detail.component';
 import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component';
 import { RecipeStartComponent } from './recipes/recipe-start/recipe-start.component';
+import { RecipesResolverService } from './recipes/recipes-resolver.service';
 
 import { RecipesComponent } from './recipes/recipes.component';
 import { ShoppingListComponent } from './shopping-list/shopping-list.component';
@@ -12,10 +13,22 @@ import { ShoppingListComponent } from './shopping-list/shopping-list.component';
 const appRoutes: Routes = [
   {path:'', redirectTo: '/recipes', pathMatch: 'full'}, // localhost:4200 will open AppComponent
   {path:'recipes', component: RecipesComponent, children: [
-    {path:'', component: RecipeStartComponent}, // on the same url as the parent route, show this componentsymultaneisly
+    {
+      path:'', 
+      component: RecipeStartComponent, 
+      resolve:[RecipesResolverService]
+    }, // on the same url as the parent route, show this componentsymultaneisly
     {path:'new', component: RecipeEditComponent}, // must be above :id route because Angular will confuse new for :id otherwise
-    {path:':id', component: RecipeDetailComponent},
-    {path:':id/edit', component: RecipeEditComponent}
+    {
+      path:':id', 
+      component: RecipeDetailComponent, 
+      resolve:[RecipesResolverService]
+    },
+    {
+      path:':id/edit', 
+      component: RecipeEditComponent, 
+      resolve:[RecipesResolverService]
+    }
 
   ]}, // localhost:4200/recipes will open UsersComponent
   {path:'shopping-list', component: ShoppingListComponent} // localhost:4200/shopping-list will open ShoppingListComponent
