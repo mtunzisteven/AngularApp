@@ -1,7 +1,7 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {EventEmitter, Injectable} from '@angular/core';
 import { Subject } from 'rxjs';
 import {Contact} from './contact.model';
-import {MOCKCONTACTS} from './MOCKCONTACTS';
 
 // This injectable argument replaces the need to add the provides inside 
 // component.ts file or in the app.module.ts file
@@ -16,6 +16,9 @@ export class ContactService {
   // a better way to emit contact array changes
   contactListChangedEvent = new Subject<Contact[]>();
 
+  // firebase db url
+  url = "https://cms-project-12461-default-rtdb.firebaseio.com/contacts.json";
+
   // declare the contacts array that will hold the contacts
   contacts: Contact [] =[];
 
@@ -25,70 +28,98 @@ export class ContactService {
   // create a custom event that will emit contact data up to parent
   contactSelectedEvent = new EventEmitter<Contact>();
 
-  constructor() {
-    this.contacts = MOCKCONTACTS;
+  constructor(private http: HttpClient) {
+    this.http
+    .get(this.url)
+    .subscribe(
+      // success method
+      (contacts: Contact[]) => {
+
+          this.contacts = contacts;
+          this.maxContactId = this.getMaxId();
+
+          // sort contacts
+          this.contacts.sort((a, b) => {
+            if(+a.id < +b.id){
+              return -1;
+            }else{
+              return 1;
+            }
+          });
+
+          this.contactListChangedEvent.next(this.contacts.slice());
+
+      },
+      // error method
+      (error: any) => {
+          console.log(error);
+      } 
+    );
+
+            // success method
   }
 
-   getContacts(): Contact[]{
-     // returning a copy of the contacts array to avoid the original being modified
-     return this.contacts.slice();
-   }
+  getContacts(): Contact[]{
+    // returning a copy of the contacts array to avoid the original being modified
+    return this.contacts.slice();
+  }
 
-   getContact(id: string): Contact{
+  getContact(id: string): Contact{
 
-    // FOR each contact in the contacts list
-    // IF contact.id equals the id THEN
-    // RETURN contact
-    // ENDIF
-    // ENDFOR
-    // RETURN null
+  // FOR each contact in the contacts list
+  // IF contact.id equals the id THEN
+  // RETURN contact
+  // ENDIF
+  // ENDFOR
+  // RETURN null
 
-    let returnValue: Contact;
-    const BreakError = {};
+  let returnValue: Contact;
+  const BreakError = {};
 
-    try{
+  try{
 
-      this.contacts.forEach(contact => {
+    this.contacts.forEach(contact => {
 
-        returnValue = contact.id===id? contact:null;
+      returnValue = contact.id===id? contact:null;
 
-        if(returnValue){
+      if(returnValue){
 
-          throw BreakError; // Only way to break loop
+        throw BreakError; // Only way to break loop
 
-        }
-      });
-    }catch(err){
-      if(err !== BreakError){throw err;}else{return returnValue;}
-    }
+      }
+    });
+  }catch(err){
+    if(err !== BreakError){throw err;}else{return returnValue;}
+  }
 
-    return null;
+  return null;
 
-   }
+  }
 
-   deleteContact(contact: Contact) { 
-         
-    // if the contact selectted for deletion is not found,
-    // end the function.
-    if (!contact) {
+  deleteContact(contact: Contact) { 
+        
+  // if the contact selectted for deletion is not found,
+  // end the function.
+  if (!contact) {
+    return;
+  }
+
+  // find the index of the contact to delete in the 
+  // contacts array and assign its value to pos
+  const pos = this.contacts.indexOf(contact);
+
+  // if the index in pos was not found, end function
+  if (pos < 0) {
       return;
-    }
+  }
 
-    // find the index of the contact to delete in the 
-    // contacts array and assign its value to pos
-    const pos = this.contacts.indexOf(contact);
+  // remove the contact at the index(pos) given 
+  this.contacts.splice(pos, 1);
 
-    // if the index in pos was not found, end function
-    if (pos < 0) {
-        return;
-    }
+  // update db and emit the contact changes 
+  this.storeContacts();
 
-    // remove the contact at the index(pos) given 
-    this.contacts.splice(pos, 1);
-
-    // emit the changes and pass the updated contacts array
-    this.contactListChangedEvent.next(this.contacts.slice());
-   }
+  }
 
   // fn to add a contact into the contacts array
   addcontact(newcontact: Contact) {
@@ -104,8 +135,8 @@ export class ContactService {
     // add the new contact into the contacts copy
     this.contacts.push(newcontact);
 
-    // emit the changes and pass a copy of the updated contacts array
-    this.contactListChangedEvent.next(this.contacts.slice());
+    // update db and emit the contact changes 
+    this.storeContacts();
 
   }
 
@@ -130,8 +161,8 @@ export class ContactService {
     // Use the index(pos) to uodate the contact at that position with the newcontact
     this.contacts[pos] = newcontact;
 
-    // emit the contact changes and pass a copy of the updated contacts array
-    this.contactListChangedEvent.next(this.contacts.slice())
+    // update db and emit the contact changes 
+    this.storeContacts();
 
   }
 
@@ -156,5 +187,20 @@ export class ContactService {
     });
 
     return maxId
+  }
+
+  // a method to add contacts into the db
+  storeContacts(){
+    const newContacts = JSON.stringify(this.contacts);
+    this.http.put(
+      this.url, 
+      newContacts,
+      {
+        headers: new HttpHeaders({"Content-Type":"application/json"})
+      }
+    )
+    .subscribe(
+      () => this.contactListChangedEvent.next(this.contacts.slice())
+    )
   }
 }

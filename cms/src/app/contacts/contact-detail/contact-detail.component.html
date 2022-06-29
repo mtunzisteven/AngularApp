@@ -7,8 +7,8 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-6">
-                <img class="media-object" style="max-height:80px;" src="{{contact.imageUrl}}" alt="{{contact.name}}" >                
+            <div class="col-xs-6" ><!-- Only show image if it is available -->
+                <img *ngIf="contact.imageUrl != null" class="media-object" style="max-height:80px;" src="{{contact.imageUrl}}" alt="{{contact.name}}" >                
             </div>
             <div class="col-xs-3">
                 <a 

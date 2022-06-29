@@ -24,21 +24,15 @@ export class ContactListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    // assign contacts list to the copy of contacts list provided in the contact service
-    this.contacts = this.organizer(this.contactService.getContacts());
+    this.contacts = this.contactService.getContacts();
 
-    // we subscribe to the event emitter that monitors
-    // the deletion of contacts in the contacts array
-    // we assign the subscription to the subscription type variable, so we caunsub in OnDestroy
     this.contactChangesSubsciprtion = this.contactService.contactListChangedEvent.subscribe(
 
-      // the contact array passsed to the event Emitter in contact Service
-      // retrieved for use in this subscription.
-      (contactList: Contact[])=>{
+      // this subscription to the documentListChangedEvent receives
+      // an updated array upon change in the DocumentService contacts 
+      (contactsList : Contact[]) => {
 
-        // update the contacts in the contact list with the up to date 
-        // contacts from the contact service
-        this.contacts = this.organizer(contactList);
+        this.contacts = contactsList; // update the document we initialized in this file
 
       }
 
@@ -51,52 +45,67 @@ export class ContactListComponent implements OnInit, OnDestroy {
     this.contactChangesSubsciprtion.unsubscribe();
   }
 
-  organizer(contacts: Contact[]){
+  // organizer(contacts: Contact[]){
 
-    const newContacts = [];
-    const indexes = [];
+  //   const newContacts = [];
 
-    contacts.forEach(contact=>{
+  //   // do this for each contact
+  //   contacts.forEach(contact=>{
 
-      if(contact.group == null){
+  //     // if the contact has nothing in its group array
+  //     if(contact.group == null){
 
-        newContacts.push(contact);
+  //       // add contact to new contacts array
+  //       newContacts.push(contact);
 
-      }else{
+  //     }else{// if the contact has something in its group array
         
-        newContacts.push(contact);
+  //       // add contact to new contacts array
+  //       newContacts.push(contact);
 
-        contact.group.forEach(groupie=>{
+  //       // for each item in the contact's group array
+  //       contact.group.forEach(groupie=>{
 
-          let index = newContacts.findIndex(contact => {
+  //         // find the out if the contact has been added already to the newContacts array
+  //         // Some contacts are set as child contacts(groupie) so they appear multiple times
+  //         // check that each child contact has not already been added in newContacts as parent contact
+  //         let index = newContacts.findIndex(contact => {
 
-            if (contact.id === groupie.id) {
-              return true;
-            }
-          
-            return false;
+  //             // if the childContact's id matches any of the contacts already in the 
+  //             // newContacts array, return true. That will result in the index of the 
+  //             // contact in the newContacts array being assigned to index.
+  //             if (contact.id === groupie.id) {
+  //               return true;
+  //             }
+            
+  //             // if above statement is not returned, then false is returned 
+  //             // and that results in -1 being assigned index.
+  //             return false;
 
-          });
+  //         });
 
-          if(index !== -1){
+  //         // When the child contact is already added to the newCOntacts Array
+  //         // index is not equal to -1, therefore we  remove that contact, 
+  //         // so we can add it as a child contact under its parent[index orderwise]
+  //         if(index !== -1){
 
-            newContacts.splice(index, 1);
+  //           newContacts.splice(index, 1);
 
-          }
+  //         }
 
-          newContacts.push(groupie);
+  //         newContacts.push(groupie);
 
 
-        });
-      }
+  //       });
+  //     }
 
-    });
+  //   });
 
-    console.log(newContacts);
+  //   console.log(newContacts);
 
-    return newContacts;
+  //   return newContacts;
 
-  }
+  // }
 
   search(value: string){
     this.term = value;

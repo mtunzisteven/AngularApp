@@ -1,7 +1,8 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import {Document} from './document.model';
-import {MOCKDOCUMENTS} from './MOCKDOCUMENTS';
 import { Subject } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+import {Document} from './document.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,9 @@ export class DocumentService {
 
   // Will be used to emit documents array changes
   // documentChangedEvent = new EventEmitter<Document[]>();
+
+  // firebase db url
+  url = "https://cms-project-12461-default-rtdb.firebaseio.com/documents.json";
 
   // Will be used to emit the selected document
   selectedDocumentEvent = new EventEmitter<Document>();
@@ -24,10 +28,49 @@ export class DocumentService {
   // variable that will hold the maxId return by the getMaxId fn
   maxDocumentId: number;
 
-  constructor() { 
+  constructor(private http: HttpClient) { 
     // Initialize the documents array with the contents of MOCKDOCUMENTS
-    this.documents = MOCKDOCUMENTS;
-    this.maxDocumentId = this.getMaxId();
+    // this.documents = db documents;
+
+    this.http
+      .get(this.url)
+      .subscribe(
+        // success method
+        (documents: Document[]) => {
+
+            this.documents = documents;
+            this.maxDocumentId = this.getMaxId();
+
+            // sort documents
+            this.documents.sort((a, b) => {
+              if(+a.id < +b.id){
+                return -1;
+              }else{
+                return 1;
+              }
+            });
+
+            this.documentListChangedEvent.next(this.documents.slice());
+
+        },
+        // error method
+        (error: any) => {
+            console.log(error);
+        } 
+      );
+
+              // success method
+              // (documents: Document[] ) => {
+              //     this.documents = documents
+              //     this.maxDocumentId = getMaxId()
+              //     sort the list of documents
+              //     emit the next document list change event
+              // }
+              // // error method
+              // (error: any) => {
+              //     print the error to the console
+              // } 
+
   }
 
   getDocuments():Document[]{
@@ -78,8 +121,8 @@ export class DocumentService {
     // remove the document at the index(pos) given 
     this.documents.splice(pos, 1);
 
-    // emit the changes and pass the updated documents array
-    this.documentListChangedEvent.next(this.documents.slice());
+    // update db and emit the document changes
+    this.storeDocuments();
   }
 
   // fn to add a document into the documents array
@@ -96,8 +139,8 @@ export class DocumentService {
     // add the new document into the documents copy
     this.documents.push(newDocument);
 
-    // emit the changes and pass a copy of the updated documents array
-    this.documentListChangedEvent.next(this.documents.slice());
+    // update db and emit the document changes
+    this.storeDocuments();
 
   }
 
@@ -122,8 +165,8 @@ export class DocumentService {
     // Use the index(pos) to uodate the document at that position with the newDocument
     this.documents[pos] = newDocument;
 
-    // emit the document changes and pass a copy of the updated documents array
-    this.documentListChangedEvent.next(this.documents.slice())
+    // update db and emit the document changes
+    this.storeDocuments();
 
   }
 
@@ -148,5 +191,20 @@ export class DocumentService {
     });
 
     return maxId
+  }
+
+  // a method to add documents intto the data
+  storeDocuments(){
+    const newDocuments = JSON.stringify(this.documents);
+    this.http.put(
+      this.url, 
+      newDocuments,
+      {
+        headers: new HttpHeaders({"Content-Type":"application/json"})
+      }
+    )
+    .subscribe(
+      () => this.documentListChangedEvent.next(this.documents.slice())
+    )
   }
 }
