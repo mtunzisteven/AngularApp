@@ -28,21 +28,40 @@ export class PostsService {
     // post returns a response, it is an obsevable. If we do not subscribe to it,
     // Angular never bothers to send the request at all. Response data will be extracted for us.
     // We specify what type of data we'll receive with the help of our model in "<>"
+
     this.http
-      .post<{ name: string }>(
-        'https://ng-complete-guide-d897e-default-rtdb.firebaseio.com/posts.json', 
-        postData,
-        {
-          observe: 'response' 
-        } // Adding this arg next to postData allows us to receive full response data( with bosy included)
-        )
-      .subscribe(responseData => {
-        console.log(responseData); // We've got access tp the full response data, therefore we can use responseData.body to use body
-      }, error => {
-        this.error.next(error);
-      }
-      
-      );
+    .post<{ message: string }>(
+      'http://localhost:3000/api/posts', 
+      postData,
+      {
+        observe: 'response' 
+      } // Adding this arg next to postData allows us to receive full response data( with bosy included)
+      )
+    .subscribe(responseData => {
+      console.log(responseData); // We've got access tp the full response data, therefore we can use responseData.body to use body
+    }, error => {
+      this.error.next(error);
+    }
+    
+    );
+
+    //--Post to Firebase
+      // this.http
+      //   .post<{ name: string }>(
+      //     'https://ng-complete-guide-d897e-default-rtdb.firebaseio.com/posts.json', 
+      //     postData,
+      //     {
+      //       observe: 'response' 
+      //     } // Adding this arg next to postData allows us to receive full response data( with bosy included)
+      //     )
+      //   .subscribe(responseData => {
+      //     console.log(responseData); // We've got access tp the full response data, therefore we can use responseData.body to use body
+      //   }, error => {
+      //     this.error.next(error);
+      //   }
+        
+      //   );
+    //--
   }
 
   fetchPosts(){
@@ -54,45 +73,58 @@ export class PostsService {
     // because we wanted to monitor when the data has been fetched. An alternative method 
     // would be to use a subject to monitor the fetching of data, bit that is not necessary here.
 
-    return this.http.get<{ [key: string]: Post}>(
-      'https://ng-complete-guide-d897e-default-rtdb.firebaseio.com/posts.json',
-      {// All requests allow us to add headers. These may be required by API we're sending request to
-       // We can also use params instead of headers, depending on what the API endpoints need
-        headers: new HttpHeaders({"Custom-Header":"Hello"}), 
-        params: new HttpParams().set('print', 'pretty'),
-        responseType: 'json' // this arg allows us to set the response type | default is json
-      } 
-      )
-      .pipe(
-        map((responseData) => {
-        // pipe allows us to work the data before we subscribe to it.
-        // here we're using map method to change the way the data looks
+    //---Fetched from localhost3000
+      return this.http.get<Post[]>(
+          "http://localhost:3000/api/posts",
+          {// All requests allow us to add headers. These may be required by API we're sending request to
+          // We can also use params instead of headers, depending on what the API endpoints need
+            headers: new HttpHeaders({"Custom-Header":"Hello"}), 
+            params: new HttpParams().set('print', 'pretty'),
+            responseType: 'json' // this arg allows us to set the response type | default is json
+          } 
+        )
 
-        const postArr: Post[] = [];
+    //--- Fetched from Firebase
+        // return this.http.get<{ [key: string]: Post}>(
+        //   'https://ng-complete-guide-d897e-default-rtdb.firebaseio.com/posts.json',
+        //   {// All requests allow us to add headers. These may be required by API we're sending request to
+        //    // We can also use params instead of headers, depending on what the API endpoints need
+        //     headers: new HttpHeaders({"Custom-Header":"Hello"}), 
+        //     params: new HttpParams().set('print', 'pretty'),
+        //     responseType: 'json' // this arg allows us to set the response type | default is json
+        //   } 
+        //   )
+        //   .pipe(
+        //     map((responseData) => {
+        //     // pipe allows us to work the data before we subscribe to it.
+        //     // here we're using map method to change the way the data looks
 
-        // the key is the automatic key created by Firebase for each post we create
-        // uaing the sprean operator we create a new obj
-        for(const key in responseData){
+        //     const postArr: Post[] = [];
 
-          // Make sure responseData has a key
-          if(responseData.hasOwnProperty(key)){
+        //     // the key is the automatic key created by Firebase for each post we create
+        //     // uaing the sprean operator we create a new obj
+        //     for(const key in responseData){
 
-            // key becomes the id of thw post and we unload other data
-            // into the object as the rest of the key value pairs
-            postArr.push({...responseData[key], id: key}) ;
+        //       // Make sure responseData has a key
+        //       if(responseData.hasOwnProperty(key)){
 
-          }
-        }
+        //         // key becomes the id of thw post and we unload other data
+        //         // into the object as the rest of the key value pairs
+        //         postArr.push({...responseData[key], id: key}) ;
 
-        return postArr;
+        //       }
+        //     }
+
+        //     return postArr;
 
 
-      }), //
-      catchError(errorRes => {
-        // do your own custom actions with the function befor eyou send it to the user
-        return throwError(errorRes);
-      })
-    );
+        //   }), //
+        //   catchError(errorRes => {
+        //     // do your own custom actions with the function befor eyou send it to the user
+        //     return throwError(errorRes);
+        //   })
+        // );
+      //----
   }
 
   deletePosts(){
