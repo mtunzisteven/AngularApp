@@ -16,10 +16,12 @@ export class PostsService {
 
   error = new Subject<any>();
 
+  postsUpdated = new Subject<Post[]>();
+
   constructor(private http: HttpClient) { }
 
 
-  createAdStorePost(title: string, content: string){
+  createAndStorePost(title: string, content: string){
 
     const postData: Post = {title: title, content: content}
     
@@ -38,10 +40,16 @@ export class PostsService {
       } // Adding this arg next to postData allows us to receive full response data( with bosy included)
       )
     .subscribe(responseData => {
-      console.log(responseData); // We've got access tp the full response data, therefore we can use responseData.body to use body
-    }, error => {
-      this.error.next(error);
-    }
+        // console.log(responseData); // We've got access tp the full response data, therefore we can use responseData.body to use body
+        if(responseData.status == 201 || responseData.status == 200){
+
+          // Update UI with new posts using fetchPosts() which returns an observable we simply sub to
+          this.fetchPosts().subscribe((posts: Post[]) => {this.postsUpdated.next([...posts]); });
+
+        }
+      }, error => {
+        this.error.next(error);
+      }   
     
     );
 
@@ -73,8 +81,9 @@ export class PostsService {
     // because we wanted to monitor when the data has been fetched. An alternative method 
     // would be to use a subject to monitor the fetching of data, bit that is not necessary here.
 
-    //---Fetched from localhost3000
-      return this.http.get<Post[]>(
+    //---Fetched from localhost3000 API
+    // id now called _id since stored and fetched at MongoDB, so data expected isn't Post[], but any
+      return this.http.get<any>(
           "http://localhost:3000/api/posts",
           {// All requests allow us to add headers. These may be required by API we're sending request to
           // We can also use params instead of headers, depending on what the API endpoints need
@@ -82,7 +91,17 @@ export class PostsService {
             params: new HttpParams().set('print', 'pretty'),
             responseType: 'json' // this arg allows us to set the response type | default is json
           } 
-        )
+        ) // Use pipe below to correct the name id from mongoDb created _id
+        .pipe(map(posts =>{
+          return posts.map(post => {
+                  // Each post will be corrected to have the correct key for id
+                  return { 
+                    title: post.title,
+                    content: post.content,
+                    id: post._id
+                  };
+          });
+        })) // subscription passed correctly formatted id key
 
     //--- Fetched from Firebase
         // return this.http.get<{ [key: string]: Post}>(
@@ -142,5 +161,32 @@ export class PostsService {
         console.log('data deleted successfully!');
       }
     }));
+  }
+
+  deletePost(id: string){
+
+    this.http.delete(
+      "http://localhost:3000/api/posts/"+id)
+      .subscribe(() =>{
+
+          // Update UI with new posts using fetchPosts() which returns an observable we simply sub to
+          this.fetchPosts().subscribe((posts: Post[]) => {this.postsUpdated.next([...posts]); });
+
+      });
+
+  }
+
+  updatePost(post: Post){
+
+    post.title = "title Changed";
+
+    this.http.patch(
+      "http://localhost:3000/api/posts/", post)
+      .subscribe(() =>{
+
+          // Update UI with new posts using fetchPosts() which returns an observable we simply sub to
+          this.fetchPosts().subscribe((posts: Post[]) => {this.postsUpdated.next([...posts]); });
+
+      });
   }
 }

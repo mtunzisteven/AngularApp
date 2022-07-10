@@ -57,6 +57,10 @@
         <li class="list-group-item" *ngFor="let post of loadedPosts">
           <h3>{{ post.title }}</h3>
           <p>{{ post.content }}</p>
+          <div>
+            <button class="btn btn-warning" (click)="onUpdate(post)">Update</button>
+            <button class="btn btn-danger" (click)="onDelete(post.id)">Delete</button>
+          </div>
         </li>
       </ul>
       <p *ngIf="isFetching && !error">Loading...</p>

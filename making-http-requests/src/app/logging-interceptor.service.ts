@@ -13,18 +13,18 @@ export class LoggingInterceptorService implements HttpInterceptor{
         // if(req.url == 'url'){ code to execute}
 
         console.log('Outgoing request!');
-        console.log(req.url);
-        console.log(req.headers);
+        // console.log(req.url);
+        // console.log(req.headers);
 
         // next.handle(req) lets request leave the app | without this, the app will break
         // next.handle(req) is an observable that has the response, 
         // using pipe on it can allow us to intercept the response and modify it as we please using: .pipe(map/ .pipe(tap etc
         return next.handle(req).pipe(
           tap(event =>{
-            console.log(event);
+            // console.log(event);
             if(event.type === HttpEventType.Response){
               console.log("Incoming response!");
-              console.log(event.body);
+              // console.log(event.body);
             }
           })
         ); 

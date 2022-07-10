@@ -16,7 +16,7 @@ export class AppComponent implements OnInit, OnDestroy{
   isFetching = false;
   error = null;
 
-  errorSub: Subscription;
+  sub: Subscription;
 
   constructor(
     private http: HttpClient,
@@ -25,9 +25,16 @@ export class AppComponent implements OnInit, OnDestroy{
 
   ngOnInit() {
 
-    this.errorSub = this.postService.error.subscribe(
+    this.sub = this.postService.error.subscribe(
       (error)=>{
         this.error = error;
+      }
+    );
+
+    // update fetched posts
+    this.sub = this.postService.postsUpdated.subscribe(
+      (posts: Post[]) =>{
+        this.loadedPosts = posts;
       }
     );
 
@@ -48,15 +55,14 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   ngOnDestroy(): void {
-    this.errorSub.unsubscribe();
+    this.sub.unsubscribe();
   }
 
   onCreatePost(postData: Post) {
     // Send Http request
-    this.postService.createAdStorePost(postData.title, postData.content);
+    this.postService.createAndStorePost(postData.title, postData.content);
 
   }
-
 
   onFetchPosts() {
     // Send Http request
@@ -87,6 +93,16 @@ export class AppComponent implements OnInit, OnDestroy{
     this.error = null;
     this.isFetching = false;
 
+  }
+
+  onDelete(id: string){
+
+    this.postService.deletePost(id);
+
+  }
+
+  onUpdate(post: Post){
+    this.postService.updatePost(post);
   }
 
 }
