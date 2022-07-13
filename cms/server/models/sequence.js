@@ -1,4 +1,3 @@
-const { NumberSymbol } = require('@angular/common');
 const mongoose = require('mongoose');
 
 const sequenceSchema = mongoose.Schema({

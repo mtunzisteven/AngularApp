@@ -14,7 +14,8 @@ export class DocumentService {
   // documentChangedEvent = new EventEmitter<Document[]>();
 
   // firebase db url
-  url = "https://cms-project-12461-default-rtdb.firebaseio.com/documents.json";
+  // url = "https://cms-project-12461-default-rtdb.firebaseio.com/documents.json";
+  url = "http://localhost:3000/documents/";
 
   // Will be used to emit the selected document
   selectedDocumentEvent = new EventEmitter<Document>();
@@ -41,16 +42,7 @@ export class DocumentService {
             this.documents = documents;
             this.maxDocumentId = this.getMaxId();
 
-            // sort documents
-            this.documents.sort((a, b) => {
-              if(+a.id < +b.id){
-                return -1;
-              }else{
-                return 1;
-              }
-            });
-
-            this.documentListChangedEvent.next(this.documents.slice());
+          this.sortAndSend()
 
         },
         // error method
@@ -73,10 +65,17 @@ export class DocumentService {
 
   }
 
-  getDocuments():Document[]{
-    // return a copy of the documents array. 
-    // No changes will affect the original array
-    return this.documents.slice();
+  getDocuments(){
+
+    // fetch documents from backend: API using get method
+    this.http.get<any>(this.url)
+      .subscribe(
+        (response: Response) => {
+          this.sortAndSend();
+        }
+      );
+
+      return this.documents;
   } 
   
   // get a single document using an string type id
@@ -103,70 +102,79 @@ export class DocumentService {
   // Method used to delete a document from the documents array
   deleteDocument(document: Document) {
     
-    // if the document selectted for deletion is not found,
-    // end the function.
     if (!document) {
-        return;
+      return;
     }
 
-    // find the index of the document to delete in the 
-    // documents array and assign its value to pos
-    const pos = this.documents.indexOf(document);
+    const pos = this.documents.findIndex(d => d.id === document.id);
 
-    // if the index in pos was not found, end function
     if (pos < 0) {
-        return;
+      return;
     }
 
-    // remove the document at the index(pos) given 
-    this.documents.splice(pos, 1);
-
-    // update db and emit the document changes
-    this.storeDocuments();
+    // delete from database
+    this.http.delete(this.url + document.id)
+      .subscribe(
+        (response: Response) => {
+          this.documents.splice(pos, 1);
+          this.sortAndSend();
+        }
+      );
   }
 
   // fn to add a document into the documents array
   addDocument(newDocument: Document) {
 
-    // if the newDocument is not found, return
-    if(!newDocument){
+    if (!document) {
       return;
     }
 
-    // increment the maxId found in the documents array
-    this.maxDocumentId++;
+    // make sure id of the new Document is empty
+    newDocument.id = '';
 
-    // add the new document into the documents copy
-    this.documents.push(newDocument);
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
 
-    // update db and emit the document changes
-    this.storeDocuments();
+    // add to database
+    this.http.post<{ message: string, document: Document }>(this.url,
+      newDocument,
+      { headers: headers })
+      .subscribe(
+        (responseData) => {
+          // add new document to documents
+          this.documents.push(responseData.document);
+          this.sortAndSend();
+        }
+      );
 
   }
 
   updateDocument(originalDocument: Document, newDocument: Document) {
 
-    // if the original document or the new document is null or undefined return
-    if(!originalDocument || !newDocument){
+    if (!originalDocument || !newDocument) {
       return;
     }
 
-    // get the index(pos) of the original document being updated
-    let pos = this.documents.indexOf(originalDocument);
+    const pos = this.documents.findIndex(d => d.id === originalDocument.id);
 
-    // if the index of the original document is not found, return
-    if(pos < 0){
+    if (pos < 0) {
       return;
     }
 
-    // set the id of the new document to that of the original document being updated
+    // set the id of the new Document to the id of the old Document
     newDocument.id = originalDocument.id;
+    newDocument._id = originalDocument._id;
 
-    // Use the index(pos) to uodate the document at that position with the newDocument
-    this.documents[pos] = newDocument;
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
 
-    // update db and emit the document changes
-    this.storeDocuments();
+    // update database
+    this.http.put(this.url + originalDocument.id,
+      newDocument, { headers: headers })
+      .subscribe(
+        (response: Response) => {
+          this.documents[pos] = newDocument;
+          this.sortAndSend();
+        }
+      );
 
   }
 
@@ -193,7 +201,7 @@ export class DocumentService {
     return maxId
   }
 
-  // a method to add documents intto the data
+  // a method to add documents into the data
   storeDocuments(){
     const newDocuments = JSON.stringify(this.documents);
     this.http.put(
@@ -203,8 +211,20 @@ export class DocumentService {
         headers: new HttpHeaders({"Content-Type":"application/json"})
       }
     )
-    .subscribe(
-      () => this.documentListChangedEvent.next(this.documents.slice())
-    )
+
+  }
+
+  // sort documents
+  sortAndSend(){
+
+    this.documents.sort((a, b) => {
+      if(+a.id < +b.id){
+        return -1;
+      }else{
+        return 1;
+      }
+    });
+
+    this.documentListChangedEvent.next(this.documents.slice());
   }
 }

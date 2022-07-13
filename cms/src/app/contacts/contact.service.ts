@@ -66,58 +66,58 @@ export class ContactService {
 
   getContact(id: string): Contact{
 
-  // FOR each contact in the contacts list
-  // IF contact.id equals the id THEN
-  // RETURN contact
-  // ENDIF
-  // ENDFOR
-  // RETURN null
+    // FOR each contact in the contacts list
+    // IF contact.id equals the id THEN
+    // RETURN contact
+    // ENDIF
+    // ENDFOR
+    // RETURN null
 
-  let returnValue: Contact;
-  const BreakError = {};
+    let returnValue: Contact;
+    const BreakError = {};
 
-  try{
+    try{
 
-    this.contacts.forEach(contact => {
+      this.contacts.forEach(contact => {
 
-      returnValue = contact.id===id? contact:null;
+        returnValue = contact.id===id? contact:null;
 
-      if(returnValue){
+        if(returnValue){
 
-        throw BreakError; // Only way to break loop
+          throw BreakError; // Only way to break loop
 
-      }
-    });
-  }catch(err){
-    if(err !== BreakError){throw err;}else{return returnValue;}
-  }
+        }
+      });
+    }catch(err){
+      if(err !== BreakError){throw err;}else{return returnValue;}
+    }
 
-  return null;
+    return null;
 
   }
 
   deleteContact(contact: Contact) { 
         
-  // if the contact selectted for deletion is not found,
-  // end the function.
-  if (!contact) {
-    return;
-  }
-
-  // find the index of the contact to delete in the 
-  // contacts array and assign its value to pos
-  const pos = this.contacts.indexOf(contact);
-
-  // if the index in pos was not found, end function
-  if (pos < 0) {
+    // if the contact selectted for deletion is not found,
+    // end the function.
+    if (!contact) {
       return;
-  }
+    }
 
-  // remove the contact at the index(pos) given 
-  this.contacts.splice(pos, 1);
+    // find the index of the contact to delete in the 
+    // contacts array and assign its value to pos
+    const pos = this.contacts.indexOf(contact);
 
-  // update db and emit the contact changes 
-  this.storeContacts();
+    // if the index in pos was not found, end function
+    if (pos < 0) {
+        return;
+    }
+
+    // remove the contact at the index(pos) given 
+    this.contacts.splice(pos, 1);
+
+    // update db and emit the contact changes 
+    this.storeContacts();
 
   }
 

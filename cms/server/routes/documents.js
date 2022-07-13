@@ -25,6 +25,8 @@ router.get('/', (req, res, next) => {
   // get the next id for the new document being added
   const maxDocumentId = sequenceGenerator.nextId("documents");
 
+  console.log(req.body);
+
   // create a new document using the document model
   const document = new Document({
     id: maxDocumentId,
