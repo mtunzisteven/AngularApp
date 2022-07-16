@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Subject } from 'rxjs';
+
 import { ContactService } from '../contacts/contact.service';
 
 import { Message } from './message.model';
@@ -14,7 +15,7 @@ export class MessageService {
 
   messages: Message[] = [];
 
-  maxMessageId : number;
+  maxMessageId : number = 0;
 
   // url = "https://cms-project-12461-default-rtdb.firebaseio.com/messages.json";
   url = "http://localhost:3000/messages/";
@@ -23,7 +24,10 @@ export class MessageService {
   constructor(
     private http: HttpClient,
     private contactService: ContactService
-    ) { 
+    ) {}
+
+  getMessages(){
+
     // Initialize the messages array with the contents of MOCKmessageS
     // this.messages = db messages;
 
@@ -32,12 +36,12 @@ export class MessageService {
           this.url, 
           { headers: this.headers }
         )
-       // Use pipe below to get correct messages
-       .pipe(map(fetchedmessages =>{
+      // Use pipe below to get correct messages
+      .pipe(map(fetchedMessages =>{
 
-          return this.senderCorrection(fetchedmessages);
+        return this.senderCorrection(fetchedMessages);
 
-        })) 
+      })) 
       .subscribe(
         // success method
         (messages: Message[]) => {
@@ -54,24 +58,8 @@ export class MessageService {
             console.log(error);
         } 
       );
-
-              // success method
-              // (messages: Message[] ) => {
-              //     this.messages = messages
-              //     this.maxMessageId = getMaxId()
-              //     sort the list of messages
-              //     emit the next message list change event
-              // }
-              // // error method
-              // (error: any) => {
-              //     print the error to the console
-              // } 
-
-  }
-
-  getMessages(){
-
-      return this.messages.slice()
+    
+    return this.messages.slice();
 
   } 
   

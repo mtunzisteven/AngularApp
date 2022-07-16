@@ -30,7 +30,11 @@ export class DocumentService {
   url = "http://localhost:3000/documents/";
   headers = new HttpHeaders({'Content-Type': 'application/json'});
 
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient) {}
+
+  getDocuments(){
+
+    
     // Initialize the documents array with the contents of MOCKDOCUMENTS
     // this.documents = db documents;
 
@@ -58,25 +62,9 @@ export class DocumentService {
         (error: any) => {
             console.log(error);
         } 
-      );
+    );
 
-              // success method
-              // (documents: Document[] ) => {
-              //     this.documents = documents
-              //     this.maxDocumentId = getMaxId()
-              //     sort the list of documents
-              //     emit the next document list change event
-              // }
-              // // error method
-              // (error: any) => {
-              //     print the error to the console
-              // } 
-
-  }
-
-  getDocuments(){
-
-      return this.documents.slice()
+    return this.documents.slice()
 
   } 
   

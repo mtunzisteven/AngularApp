@@ -30,7 +30,8 @@ export class ContactService {
   url = "http://localhost:3000/contacts/";
   headers = new HttpHeaders({'Content-Type': 'application/json'});
 
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient) {
+    
     // Initialize the contacts array with the contents of MOCKcontactS
     // this.contacts = db contacts;
 
@@ -40,9 +41,44 @@ export class ContactService {
           { headers: this.headers }
         )
        // Use pipe below to get correct contacts
-       .pipe(map(fetchedcontacts =>{
+       .pipe(map(fetchedContacts =>{
 
-          return fetchedcontacts['contacts'];
+          return fetchedContacts['contacts'];
+          
+        })) 
+      .subscribe(
+        // success method
+        (contacts: Contact[]) => {
+
+          this.contacts = contacts;
+
+          this.maxContactId = this.getMaxId();
+
+          this.sortAndSend();
+
+        },
+        // error method
+        (error: any) => {
+            console.log(error);
+        } 
+      );
+  }
+
+  getContacts(){ 
+
+    // Initialize the contacts array with the contents of MOCKcontactS
+    // this.contacts = db contacts;
+
+    this.http
+      .get(
+          this.url, 
+          { headers: this.headers }
+        )
+       // Use pipe below to get correct contacts
+       .pipe(map(fetchedContacts =>{
+
+          return fetchedContacts['contacts'];
+
         })) 
       .subscribe(
         // success method
@@ -61,23 +97,7 @@ export class ContactService {
         } 
       );
 
-              // success method
-              // (contacts: Contact[] ) => {
-              //     this.contacts = contacts
-              //     this.maxContactId = getMaxId()
-              //     sort the list of contacts
-              //     emit the next contact list change event
-              // }
-              // // error method
-              // (error: any) => {
-              //     print the error to the console
-              // } 
-
-  }
-
-  getContacts(){
-
-      return this.contacts.slice()
+    return this.contacts.slice();
 
   } 
   
@@ -216,7 +236,6 @@ export class ContactService {
     )
   }
 
-  
   // sort contacts
   sortAndSend(){
 
