@@ -8,8 +8,9 @@ const Document = require('../models/document');
 router.get('/', (req, res, next) => {
 
     Document.find()
-        .then(FecthedDocuments => {
-            res.status(200).json({documents:FecthedDocuments});
+        .then(fecthedDocuments => {
+            console.log(fecthedDocuments)
+            res.status(200).json({documents:fecthedDocuments});
         })
         .catch(error => {
             res.status(500).json({

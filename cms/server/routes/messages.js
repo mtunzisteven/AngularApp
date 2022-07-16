@@ -9,13 +9,15 @@ router.get('/', (req, res, next) => {
 
     Message.find()
         .then(Fecthedmessages => {
-            res.status(200).json({messages:Fecthedmessages});
+
+          res.status(200).json({messages:Fecthedmessages});
+
         })
         .catch(error => {
-            res.status(500).json({
-                message: 'Error fetching data from the database',
-                error: error
-            });
+          res.status(500).json({
+              message: 'Error fetching data from the database',
+              error: error
+          });
         })
  });
 

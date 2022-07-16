@@ -64,7 +64,7 @@ export class ContactEditComponent implements OnInit {
     this.groupContacts.push(selectedContact);
     this.contact.group = this.groupContacts;
 
-    this.contactService.updatecontact(this.originalContact, this.contact);
+    this.contactService.updateContact(this.originalContact, this.contact);
 
   }
 
@@ -95,10 +95,10 @@ export class ContactEditComponent implements OnInit {
 
     if(this.editMode){
 
-      this.contactService.updatecontact(this.originalContact, newContact)
+      this.contactService.updateContact(this.originalContact, newContact)
 
     }else{
-      this.contactService.addcontact(newContact);
+      this.contactService.addContact(newContact);
     }
 
     this.router.navigate(['../../'], {relativeTo:this.route});

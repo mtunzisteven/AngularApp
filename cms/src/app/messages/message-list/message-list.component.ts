@@ -17,11 +17,10 @@ export class MessageListComponent implements OnInit {
   ngOnInit(): void {
     this.messages = this.messageService.messages;
 
-    this.messageService.messageChangedEvent.subscribe(
+    this.messageService.messageListChangedEvent.subscribe(
 
       (messages:Message[])=>{
-
-          this.messages = messages;
+        this.messages = messages;
       }
 
     );

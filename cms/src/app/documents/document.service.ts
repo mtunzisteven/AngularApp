@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { map, Subject } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import {Document} from './document.model';
@@ -13,10 +13,6 @@ export class DocumentService {
   // Will be used to emit documents array changes
   // documentChangedEvent = new EventEmitter<Document[]>();
 
-  // firebase db url
-  // url = "https://cms-project-12461-default-rtdb.firebaseio.com/documents.json";
-  url = "http://localhost:3000/documents/";
-
   // Will be used to emit the selected document
   selectedDocumentEvent = new EventEmitter<Document>();
 
@@ -29,20 +25,33 @@ export class DocumentService {
   // variable that will hold the maxId return by the getMaxId fn
   maxDocumentId: number;
 
+  // firebase db url
+  // url = "https://cms-project-12461-default-rtdb.firebaseio.com/documents.json";
+  url = "http://localhost:3000/documents/";
+  headers = new HttpHeaders({'Content-Type': 'application/json'});
+
   constructor(private http: HttpClient) { 
     // Initialize the documents array with the contents of MOCKDOCUMENTS
     // this.documents = db documents;
 
     this.http
-      .get(this.url)
+      .get(
+          this.url, 
+          { headers: this.headers }
+        )
+       // Use pipe below to get correct documents
+       .pipe(map(fetchedDocuments =>{
+          return fetchedDocuments['documents'];
+        })) 
       .subscribe(
         // success method
         (documents: Document[]) => {
 
-            this.documents = documents;
-            this.maxDocumentId = this.getMaxId();
+          this.documents = documents;
 
-          this.sortAndSend()
+          this.maxDocumentId = this.getMaxId();
+
+          this.sortAndSend();
 
         },
         // error method
@@ -67,15 +76,8 @@ export class DocumentService {
 
   getDocuments(){
 
-    // fetch documents from backend: API using get method
-    this.http.get<any>(this.url)
-      .subscribe(
-        (response: Response) => {
-          this.sortAndSend();
-        }
-      );
+      return this.documents.slice()
 
-      return this.documents;
   } 
   
   // get a single document using an string type id
@@ -125,7 +127,7 @@ export class DocumentService {
   // fn to add a document into the documents array
   addDocument(newDocument: Document) {
 
-    if (!document) {
+    if (!newDocument) {
       return;
     }
 
@@ -162,13 +164,10 @@ export class DocumentService {
 
     // set the id of the new Document to the id of the old Document
     newDocument.id = originalDocument.id;
-    newDocument._id = originalDocument._id;
-
-    const headers = new HttpHeaders({'Content-Type': 'application/json'});
 
     // update database
     this.http.put(this.url + originalDocument.id,
-      newDocument, { headers: headers })
+      newDocument, { headers: this.headers })
       .subscribe(
         (response: Response) => {
           this.documents[pos] = newDocument;

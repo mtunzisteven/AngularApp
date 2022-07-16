@@ -1,87 +1,175 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { map, Subject } from 'rxjs';
+import { ContactService } from '../contacts/contact.service';
 
 import { Message } from './message.model';
-import { MOCKMESSAGES } from './MOCKMESSAGES';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessageService {
 
-  messageChangedEvent  = new Subject<Message[]>();
+  messageListChangedEvent  = new Subject<Message[]>();
 
   messages: Message[] = [];
 
-  // firebase db url
-  url = "https://cms-project-12461-default-rtdb.firebaseio.com/messages.json";
-
-
   maxMessageId : number;
 
-  constructor(private http: HttpClient) {
+  // url = "https://cms-project-12461-default-rtdb.firebaseio.com/messages.json";
+  url = "http://localhost:3000/messages/";
+  headers = new HttpHeaders({'Content-Type': 'application/json'});
+
+  constructor(
+    private http: HttpClient,
+    private contactService: ContactService
+    ) { 
+    // Initialize the messages array with the contents of MOCKmessageS
+    // this.messages = db messages;
+
     this.http
-    .get(this.url)
-    .subscribe(
-      // success method
-      (messages: Message[]) => {
+      .get(
+          this.url, 
+          { headers: this.headers }
+        )
+       // Use pipe below to get correct messages
+       .pipe(map(fetchedmessages =>{
+
+          return this.senderCorrection(fetchedmessages);
+
+        })) 
+      .subscribe(
+        // success method
+        (messages: Message[]) => {
 
           this.messages = messages;
+
           this.maxMessageId = this.getMaxId();
 
-          // sort messages
-          this.messages.sort((a, b) => {
-            if(+a.id < +b.id){
-              return -1;
-            }else{
-              return 1;
-            }
-          });
+          this.sortAndSend();
 
-          this.messageChangedEvent.next(this.messages.slice());
+        },
+        // error method
+        (error: any) => {
+            console.log(error);
+        } 
+      );
 
-      },
-      // error method
-      (error: any) => {
-          console.log(error);
-      } 
-    );
+              // success method
+              // (messages: Message[] ) => {
+              //     this.messages = messages
+              //     this.maxMessageId = getMaxId()
+              //     sort the list of messages
+              //     emit the next message list change event
+              // }
+              // // error method
+              // (error: any) => {
+              //     print the error to the console
+              // } 
 
-            // success method
   }
 
-  getMessages(): Message[]{
-  return this.messages.slice();
+  getMessages(){
+
+      return this.messages.slice()
+
   } 
   
-  getMessage(id: string):Message{
+  // get a single message using an string type id
+  getMessage(id: string): Message{
 
-  // FOR each document in the documents list
-  // IF document.id equals the id THEN
-  // RETURN document
-  // ENDIF
-  // ENDFOR
-  // RETURN null
+    // declare a message or null type variable and assign the value of null to it
+    let returnValue: Message | null = null;
 
-  let returnValue: Message | null;
+    // loop through each message in the messages array
+    this.messages.forEach(message => {
 
-  this.messages.forEach(message => {
+      // if you find a message's id that is equal to the id n the arg
+      // change variable value & set it equal to that message 
+      if(message.id == id ){
+        
+        returnValue = message;
 
-    returnValue = message.id==id? message:null;
+      }
+    });
 
-  });
+    return returnValue;
+  }
 
-  return returnValue;
+  // Method used to delete a message from the messages array
+  deleteMessage(message: Message) {
+    
+    if (!message) {
+      return;
+    }
+
+    const pos = this.messages.findIndex(d => d.id === message.id);
+
+    if (pos < 0) {
+      return;
+    }
+
+    // delete from database
+    this.http.delete(this.url + message.id)
+      .subscribe(
+        (response: Response) => {
+          this.messages.splice(pos, 1);
+          this.sortAndSend();
+        }
+      );
+  }
+
+  // fn to add a message into the messages array
+  addMessage(newMessage: Message) {
+
+    if (!newMessage) {
+      return;
+    }
+
+    // make sure id of the new message is empty
+    newMessage.id = '';
+
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+
+    // add to database
+    this.http.post<{ message: string, data: Message }>(this.url,
+      newMessage,
+      { headers: headers })
+      .subscribe(
+        (responseData) => {
+          // add new message to messages
+          this.messages.push(responseData.data);
+          this.sortAndSend();
+        }
+      );
 
   }
 
-  addMessage(message:Message){
+  updateMessage(originalmessage: Message, newMessage: Message) {
 
-    this.messages.push(message);
+    if (!originalmessage || !newMessage) {
+      return;
+    }
 
-    // update db about changes and emit the changes
-    this.storeContacts();
+    const pos = this.messages.findIndex(d => d.id === originalmessage.id);
+
+    if (pos < 0) {
+      return;
+    }
+
+    // set the id of the new message to the id of the old message
+    newMessage.id = originalmessage.id;
+
+    // update database
+    this.http.put(this.url + originalmessage.id,
+      newMessage, { headers: this.headers })
+      .subscribe(
+        (response: Response) => {
+          this.messages[pos] = newMessage;
+          this.sortAndSend();
+        }
+      );
+
   }
 
   // function to get the max id used in the messages array by the messages
@@ -108,17 +196,63 @@ export class MessageService {
   }
 
   // a method to add messages into the db
-  storeContacts(){
-    const newMessage = JSON.stringify(this.messages);
+  storeMessages(){
+    const newMessages = JSON.stringify(this.messages);
     this.http.put(
       this.url, 
-      newMessage,
+      newMessages,
       {
         headers: new HttpHeaders({"Content-Type":"application/json"})
       }
     )
     .subscribe(
-      () => this.messageChangedEvent.next(this.messages.slice())
+      () => this.messageListChangedEvent.next(this.messages.slice())
     )
   }
+
+  
+  // sort messages
+  sortAndSend(){
+
+    this.messages.sort((a, b) => {
+      if(+a.id < +b.id){
+        return -1;
+      }else{
+        return 1;
+      }
+    });
+
+    this.messageListChangedEvent.next(this.messages.slice());
+  }
+  
+  // this function adjusts the sender attribute of each message to have the sender's id and not their _id
+  senderCorrection(fetchedmessages){
+
+    // create a contact holder variable named newContact
+    let newContact;
+
+    // update the sender attribute of each message to be the id and not the _id 
+    return fetchedmessages['messages'].map(msg =>{
+
+      // fetch a copy of the contacts using contact service
+      const contacts = this.contactService.getContacts();
+
+      // assign sender contact to newCOntact
+      newContact = contacts.find(contact => {
+        //condition for item we're looking for
+        return contact._id == msg.sender
+      });
+
+      // change sender value to equal the id and not the _id
+      msg.sender = newContact['id']; 
+
+      // return each modified message inside the messages array that will be caught in the next step
+      return msg;
+
+    });
+
+  }
+
 }
+
+

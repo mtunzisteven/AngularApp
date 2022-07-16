@@ -6,8 +6,7 @@ export class Document{
         public name: string, 
         public description: string, 
         public url: string, 
-        public children: string | null,
-        public _id?: string, 
+        public children: string | null
 
     ){}
 } 

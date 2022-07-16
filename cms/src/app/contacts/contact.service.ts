@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {EventEmitter, Injectable} from '@angular/core';
-import { Subject } from 'rxjs';
+import { map, Subject } from 'rxjs';
 import {Contact} from './contact.model';
 
 // This injectable argument replaces the need to add the provides inside 
@@ -16,9 +16,6 @@ export class ContactService {
   // a better way to emit contact array changes
   contactListChangedEvent = new Subject<Contact[]>();
 
-  // firebase db url
-  url = "https://cms-project-12461-default-rtdb.firebaseio.com/contacts.json";
-
   // declare the contacts array that will hold the contacts
   contacts: Contact [] =[];
 
@@ -28,141 +25,156 @@ export class ContactService {
   // create a custom event that will emit contact data up to parent
   contactSelectedEvent = new EventEmitter<Contact>();
 
-  constructor(private http: HttpClient) {
+  // firebase db url
+  // url = "https://cms-project-12461-default-rtdb.firebaseio.com/contacts.json";
+  url = "http://localhost:3000/contacts/";
+  headers = new HttpHeaders({'Content-Type': 'application/json'});
+
+  constructor(private http: HttpClient) { 
+    // Initialize the contacts array with the contents of MOCKcontactS
+    // this.contacts = db contacts;
+
     this.http
-    .get(this.url)
-    .subscribe(
-      // success method
-      (contacts: Contact[]) => {
+      .get(
+          this.url, 
+          { headers: this.headers }
+        )
+       // Use pipe below to get correct contacts
+       .pipe(map(fetchedcontacts =>{
+
+          return fetchedcontacts['contacts'];
+        })) 
+      .subscribe(
+        // success method
+        (contacts: Contact[]) => {
 
           this.contacts = contacts;
+
           this.maxContactId = this.getMaxId();
 
-          // sort contacts
-          this.contacts.sort((a, b) => {
-            if(+a.id < +b.id){
-              return -1;
-            }else{
-              return 1;
-            }
-          });
+          this.sortAndSend();
 
-          this.contactListChangedEvent.next(this.contacts.slice());
+        },
+        // error method
+        (error: any) => {
+            console.log(error);
+        } 
+      );
 
-      },
-      // error method
-      (error: any) => {
-          console.log(error);
-      } 
-    );
+              // success method
+              // (contacts: Contact[] ) => {
+              //     this.contacts = contacts
+              //     this.maxContactId = getMaxId()
+              //     sort the list of contacts
+              //     emit the next contact list change event
+              // }
+              // // error method
+              // (error: any) => {
+              //     print the error to the console
+              // } 
 
-            // success method
   }
 
-  getContacts(): Contact[]{
-    // returning a copy of the contacts array to avoid the original being modified
-    return this.contacts.slice();
-  }
+  getContacts(){
 
+      return this.contacts.slice()
+
+  } 
+  
+  // get a single contact using an string type id
   getContact(id: string): Contact{
 
-    // FOR each contact in the contacts list
-    // IF contact.id equals the id THEN
-    // RETURN contact
-    // ENDIF
-    // ENDFOR
-    // RETURN null
+    // declare a contact or null type variable and assign the value of null to it
+    let returnValue: Contact | null = null;
 
-    let returnValue: Contact;
-    const BreakError = {};
+    // loop through each contact in the contacts array
+    this.contacts.forEach(contact => {
 
-    try{
+      // if you find a contact's id that is equal to the id n the arg
+      // change variable value & set it equal to that contact 
+      if(contact.id == id ){
+        
+        returnValue = contact;
 
-      this.contacts.forEach(contact => {
+      }
+    });
 
-        returnValue = contact.id===id? contact:null;
-
-        if(returnValue){
-
-          throw BreakError; // Only way to break loop
-
-        }
-      });
-    }catch(err){
-      if(err !== BreakError){throw err;}else{return returnValue;}
-    }
-
-    return null;
-
+    return returnValue;
   }
 
-  deleteContact(contact: Contact) { 
-        
-    // if the contact selectted for deletion is not found,
-    // end the function.
+  // Method used to delete a contact from the contacts array
+  deleteContact(contact: Contact) {
+    
     if (!contact) {
       return;
     }
 
-    // find the index of the contact to delete in the 
-    // contacts array and assign its value to pos
-    const pos = this.contacts.indexOf(contact);
+    const pos = this.contacts.findIndex(d => d.id === contact.id);
 
-    // if the index in pos was not found, end function
     if (pos < 0) {
-        return;
+      return;
     }
 
-    // remove the contact at the index(pos) given 
-    this.contacts.splice(pos, 1);
-
-    // update db and emit the contact changes 
-    this.storeContacts();
-
+    // delete from database
+    this.http.delete(this.url + contact.id)
+      .subscribe(
+        (response: Response) => {
+          this.contacts.splice(pos, 1);
+          this.sortAndSend();
+        }
+      );
   }
 
   // fn to add a contact into the contacts array
-  addcontact(newcontact: Contact) {
+  addContact(newContact: Contact) {
 
-    // if the newcontact is not found, return
-    if(!newcontact){
+    if (!newContact) {
       return;
     }
 
-    // increment the maxId found in the contacts array
-    this.maxContactId++;
+    // make sure id of the new contact is empty
+    newContact.id = '';
 
-    // add the new contact into the contacts copy
-    this.contacts.push(newcontact);
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
 
-    // update db and emit the contact changes 
-    this.storeContacts();
+    // add to database
+    this.http.post<{ message: string, contact: Contact }>(this.url,
+      newContact,
+      { headers: headers })
+      .subscribe(
+        (responseData) => {
+          // add new contact to contacts
+          this.contacts.push(responseData.contact);
+          this.sortAndSend();
+        }
+      );
 
   }
 
-  updatecontact(originalcontact: Contact, newcontact: Contact) {
+  updateContact(originalcontact: Contact, newContact: Contact) {
 
-    // if the original contact or the new contact is null or undefined return
-    if(!originalcontact || !newcontact){
+    if (!originalcontact || !newContact) {
       return;
     }
 
-    // get the index(pos) of the original contact being updated
-    let pos = this.contacts.indexOf(originalcontact);
+    const pos = this.contacts.findIndex(d => d.id === originalcontact.id);
 
-    // if the index of the original contact is not found, return
-    if(pos < 0){
+    if (pos < 0) {
       return;
     }
 
-    // set the id of the new contact to that of the original contact being updated
-    newcontact.id = originalcontact.id;
+    // set the id of the new contact to the id of the old contact
+    newContact.id = originalcontact.id;
 
-    // Use the index(pos) to uodate the contact at that position with the newcontact
-    this.contacts[pos] = newcontact;
-
-    // update db and emit the contact changes 
-    this.storeContacts();
+    // update database
+    this.http.put(this.url + originalcontact.id,
+      newContact, { headers: this.headers })
+      .subscribe(
+        (response: Response) => {
+          this.contacts[pos] = newContact;
+          this.sortAndSend();
+        }
+      );
 
   }
 
@@ -202,5 +214,20 @@ export class ContactService {
     .subscribe(
       () => this.contactListChangedEvent.next(this.contacts.slice())
     )
+  }
+
+  
+  // sort contacts
+  sortAndSend(){
+
+    this.contacts.sort((a, b) => {
+      if(+a.id < +b.id){
+        return -1;
+      }else{
+        return 1;
+      }
+    });
+
+    this.contactListChangedEvent.next(this.contacts.slice());
   }
 }
