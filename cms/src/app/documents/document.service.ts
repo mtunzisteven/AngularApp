@@ -116,6 +116,7 @@ export class DocumentService {
   addDocument(newDocument: Document) {
 
     if (!newDocument) {
+      console.log('No new contact detected!');
       return;
     }
 

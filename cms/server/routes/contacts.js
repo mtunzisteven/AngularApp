@@ -26,6 +26,16 @@ router.post('/', (req, res, next) => {
   // get the next id for the new contact being added
   const maxcontactId = sequenceGenerator.nextId("contacts");
 
+  // phone required, so it will fail if not entered.
+  if(req.body.phone == ''){
+    req.body.phone = '00-000-0000';
+  }
+
+  // phone required, so it will fail if not entered.
+  if(req.body.imageUrl == ''){
+    req.body.imageUrl = 'xxx-xxxxx-xxxx';
+  }
+
   // create a new contact using the contact model
   const contact = new Contact({
     id: maxcontactId,
@@ -35,6 +45,8 @@ router.post('/', (req, res, next) => {
     imageUrl: req.body.imageUrl,
     group: []
   });
+
+  console.log(contact);
 
   // saved the newly created contact and return the newly 
   // added contact if successfully loaded to db

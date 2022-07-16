@@ -12,7 +12,7 @@ import { ContactService } from '../contact.service';
 export class ContactEditComponent implements OnInit {
 
   originalContact: Contact;
-   contact: Contact;
+   contact: Contact = new Contact('', '', '', '', '', []);
    groupContacts: Contact[] = [];
    editMode: boolean = false;
    id: string;
@@ -96,7 +96,6 @@ export class ContactEditComponent implements OnInit {
     if(this.editMode){
 
       this.contactService.updateContact(this.originalContact, newContact)
-
     }else{
       this.contactService.addContact(newContact);
     }
@@ -104,40 +103,39 @@ export class ContactEditComponent implements OnInit {
     this.router.navigate(['../../'], {relativeTo:this.route});
 
   }
+
   onCancel(){
 
     this.router.navigate(['../../'], {relativeTo:this.route});
 
   }
 
-  
-onRemoveItem(index: number) {
+  onRemoveItem(index: number) {
 
-   if (index < 0 || index >= this.groupContacts.length) {
-      return;
-   }
-
-   this.groupContacts.splice(index, 1);
-
-}
-  
-isInvalidContact(newContact: Contact) {
-
-    if (!newContact) {// newContact has no value
-      return true;
+    if (index < 0 || index >= this.groupContacts.length) {
+        return;
     }
-    if (this.contact && newContact.id === this.contact.id) {
-      return true;
-    }
-    for (let i = 0; i < this.groupContacts.length; i++){
-      if (newContact.id === this.groupContacts[i].id) {
+
+    this.groupContacts.splice(index, 1);
+
+  }
+    
+  isInvalidContact(newContact: Contact) {
+
+      if (!newContact) {// newContact has no value
         return true;
       }
-    }
-    return false;
+      if (this.contact && newContact.id === this.contact.id) {
+        return true;
+      }
+      for (let i = 0; i < this.groupContacts.length; i++){
+        if (newContact.id === this.groupContacts[i].id) {
+          return true;
+        }
+      }
+      return false;
 
-}
-
+  }
 
 }
 
