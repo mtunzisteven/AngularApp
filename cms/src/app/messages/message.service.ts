@@ -48,7 +48,7 @@ export class MessageService {
 
           this.messages = messages;
 
-          this.maxMessageId = this.getMaxId();
+          this.maxMessageId = this.getMaxId(); 
 
           this.sortAndSend();
 
@@ -127,9 +127,12 @@ export class MessageService {
         (responseData) => {
           // add new message to messages
           this.messages.push(responseData.data);
-          this.sortAndSend();
+          this.getMessages();
+
         }
       );
+
+
 
   }
 

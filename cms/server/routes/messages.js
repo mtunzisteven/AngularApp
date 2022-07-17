@@ -1,8 +1,10 @@
 var express = require('express');
 var router = express.Router();
+const mongoose = require('mongoose');
 
 const sequenceGenerator = require('./sequenceGenerator');
 const Message = require('../models/message');
+const Contact = require('../models/contact');
 
 // Get the list of messages from the messages collection of the db
 router.get('/', (req, res, next) => {
@@ -24,6 +26,19 @@ router.get('/', (req, res, next) => {
  // Add new messages to the messages collection of the db
  router.post('/', (req, res, next) => {
 
+  let sender;
+  
+  // get the _id of the sender and use it as the sender attribute of this message
+  Contact.findOne({id:req.body.sender})
+    .then(contact =>{
+
+      sender = contact;
+
+    })
+    .catch(error => {
+      next(error);
+    });
+
   // get the next id for the new message being added
   const maxMessageId = sequenceGenerator.nextId("messages");
 
@@ -32,17 +47,26 @@ router.get('/', (req, res, next) => {
     id: maxMessageId,
     subject: req.body.subject,
     msgText: req.body.msgText,
-    sender: req.body.sender
+    sender: sender
   });
 
   // saved the newly created message and return the newly 
   // added message if successfully loaded to db
   message.save()
     .then(createdMessage => {
-      res.status(201).json({
-        message: 'Message added successfully',
-        message: createdMessage
-      });
+
+      // update the sender attribute to be the _id of the sender
+      Message.updateOne({id: createdMessage.id}, {$set:{sender: sender}})
+        .then(result =>{
+          res.status(201).json({
+            message: 'Message added successfully',
+            message: createdMessage
+          })
+        })
+        .catch(error =>{
+          next(Error);
+        });
+
     })
     .catch(error => {
        res.status(500).json({
