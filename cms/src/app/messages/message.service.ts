@@ -222,15 +222,19 @@ export class MessageService {
     // create a contact holder variable named newContact
     let newContact;
 
+    // fetch a copy of the contacts using contact service
+    const contacts = this.contactService.getContacts();
+
+    console.log(contacts);
+
     // update the sender attribute of each message to be the id and not the _id 
     return fetchedmessages['messages'].map(msg =>{
 
-      // fetch a copy of the contacts using contact service
-      const contacts = this.contactService.getContacts();
-
-      // assign sender contact to newCOntact
+      // assign sender contact to newContact
       newContact = contacts.find(contact => {
         //condition for item we're looking for
+        // When true, the contact we seek is returned
+        // to newContact n the left of = sign above
         return contact._id == msg.sender
       });
 
