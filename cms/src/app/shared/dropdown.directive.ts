@@ -6,7 +6,9 @@ import { Directive, HostBinding, HostListener } from '@angular/core';
 export class DropdownDirective {
     
     // add private infront of element ref to ensure that it is accessible in this class.
-    constructor(){}
+    constructor(){
+      console.log('Directiving cmsDropdown');
+    }
 
     // This host binding decorative will add a class name of 'open'
     // to the element we bind to whenever openToggle is true. 
